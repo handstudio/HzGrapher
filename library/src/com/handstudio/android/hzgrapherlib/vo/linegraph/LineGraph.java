@@ -2,17 +2,17 @@ package com.handstudio.android.hzgrapherlib.vo.linegraph;
 
 import android.graphics.Color;
 
-public class Graph {
+public class LineGraph {
 	private int color = Color.BLUE;
 	private float[] coordinateArr = null;
 	private int bitmapResource = -1;
 	
-	public Graph(int color, float[] coordinateArr) {
+	public LineGraph(int color, float[] coordinateArr) {
 		this.color = color;
 		this.setCoordinateArr(coordinateArr);
 	}
 	
-	public Graph(int color, float[] coordinateArr, int bitmapResource) {
+	public LineGraph(int color, float[] coordinateArr, int bitmapResource) {
 		this.color = color;
 		this.setCoordinateArr(coordinateArr);
 		this.bitmapResource = bitmapResource;

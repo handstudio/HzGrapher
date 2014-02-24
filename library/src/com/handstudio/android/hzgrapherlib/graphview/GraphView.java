@@ -51,28 +51,12 @@ public class GraphView extends SurfaceView implements Callback{
 	}
 	
 	private void initView(Context context, LineGraphVO vo) {
-		
 		mHolder = getHolder();
 		mHolder.addCallback(this);
 	}
 	
 
 	private void initView(Context context, AttributeSet attrs, int defStyle) {
-//		if(attrs != null){
-//			TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.LineGraph, defStyle, 0);
-//			
-//			mLineGraphVO.getPaddingBottom() = a.getInteger(R.styleable.LineGraph_mLineGraphVO.getPaddingBottom(), -1);
-//			mLineGraphVO.getPaddingTop() = a.getInteger(R.styleable.LineGraph_mLineGraphVO.getPaddingTop(), -1);
-//			mLineGraphVO.getPaddingLeft() = a.getInteger(R.styleable.LineGraph_mLineGraphVO.getPaddingLeft(), -1);
-//			mLineGraphVO.getPaddingRight() = a.getInteger(R.styleable.LineGraph_mLineGraphVO.getPaddingRight(), -1);
-//			mLineGraphVO.getMarginTop() = a.getInteger(R.styleable.LineGraph_mLineGraphVO.getMarginTop(), -1);
-//			mLineGraphVO.getMarginRight() = a.getInteger(R.styleable.LineGraph_mLineGraphVO.getMarginRight(), -1);
-//			mLineGraphVO.getMaxValue() = a.getInteger(R.styleable.LineGraph_mLineGraphVO.getMaxValue(), -1);
-//			mLineGraphVO.getIncrement() = a.getInteger(R.styleable.LineGraph_mLineGraphVO.getIncrement(), -1);
-//			
-//			a.recycle();
-//		}
-		  
 		mHolder = getHolder();
 		mHolder.addCallback(this);
 	}
@@ -103,7 +87,6 @@ public class GraphView extends SurfaceView implements Callback{
 	private static final Object touchLock = new Object(); // touch synchronize
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-//		Log.e("","onTouchEvent()");
 		int action = event.getAction();
 		
 		if(mDrawThread == null ){
@@ -180,36 +163,39 @@ public class GraphView extends SurfaceView implements Callback{
 				bg = Bitmap.createScaledBitmap(tempBg, width, height, true);
 				tempBg.recycle();
 			}
-//			icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher);
 		}
 		
 		public void setRunFlag(boolean bool){
 			isRun = bool;
 		}
 		
+		private float anim = 0.0f;
+		private boolean isAnimation = false;
+		private long animStartTime = -1;
+		
 		@Override
 		public void run() {
-//			Log.e("","run()");
 			GraphCanvasWrapper graphCanvasWrapper = null;
 			Log.e(TAG,"height = " + height);
 			Log.e(TAG,"width = " + width);
 			
 			setPaint();
+			isAnimation();
 			
-			
+			animStartTime = System.currentTimeMillis();
 			
 			while(isRun){
-				
-				
+			
 				//draw only on dirty mode
 				if(!isDirty){
 					try {
-						Thread.sleep(10);
+						Thread.sleep(100);
 					} catch (InterruptedException e1) {
 						e1.printStackTrace();
 					}
 					continue;
 				}
+				
 				graphCanvasWrapper = new GraphCanvasWrapper(mHolder.lockCanvas(), width, height, mLineGraphVO.getPaddingLeft(), mLineGraphVO.getPaddingBottom());
 				
 				synchronized(mHolder){
@@ -240,7 +226,9 @@ public class GraphView extends SurfaceView implements Callback{
 							drawYText(graphCanvasWrapper);
 							
 							//TODO chart
-							drawChart(graphCanvasWrapper);
+							drawGraph(graphCanvasWrapper);
+							
+//							isDirty = false;
 							
 
 						} catch (Exception e) {
@@ -260,6 +248,17 @@ public class GraphView extends SurfaceView implements Callback{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+			}
+		}
+
+		/**
+		 * check graph line animation
+		 */
+		private void isAnimation() {
+			if(mLineGraphVO.getAnimation() != null){
+				isAnimation = true;
+			}else{
+				isAnimation = false;
 			}
 		}
 
@@ -321,12 +320,24 @@ public class GraphView extends SurfaceView implements Callback{
 		}
 
 		/**
-		 * draw chart
+		 * draw Graph
 		 */
-		private void drawChart(GraphCanvasWrapper canvas) {
+		private void drawGraph(GraphCanvasWrapper canvas) {
+			
+			if (isAnimation){
+				drawGraphWithAnimation(canvas);
+			}else{
+				drawGraphWithoutAnimation(canvas);
+			}
+		}
+		
+		/**
+		 *	draw graph without animation 
+		 */
+		private void drawGraphWithoutAnimation(GraphCanvasWrapper canvas) {
+			
 			for (int i = 0; i < mLineGraphVO.getArrGraph().size(); i++) {
 				GraphPath linePath = new GraphPath(width, height, mLineGraphVO.getPaddingLeft(), mLineGraphVO.getPaddingBottom());
-				GraphPath erasePath = new GraphPath(width, height, mLineGraphVO.getPaddingLeft(), mLineGraphVO.getPaddingBottom());
 				boolean firstSet = false;
 				float x = 0;
 				float y = 0;
@@ -335,41 +346,115 @@ public class GraphView extends SurfaceView implements Callback{
 				float xGap = xLength/(mLineGraphVO.getArrGraph().get(i).getCoordinateArr().length-1);
 				
 				Bitmap icon = arrIcon.get(i);
-//				float max = Collections.max(yCoordinates);
+				
 				for (int j = 0; j < mLineGraphVO.getArrGraph().get(i).getCoordinateArr().length; j++) {
-				    if (!firstSet) {
-				    	
-				        x = xGap * j ;
-				        y = yLength * mLineGraphVO.getArrGraph().get(i).getCoordinateArr()[j]/mLineGraphVO.getMaxValue();
-				        
-				        linePath.moveTo(x, y);
-
-//				        erasePath.moveTo(x, 0);
-//				        erasePath.lineTo(x, y);
-
-				        firstSet = true;
-				    } else {
-				        x = xGap * j;
-				        y = yLength * mLineGraphVO.getArrGraph().get(i).getCoordinateArr()[j]/mLineGraphVO.getMaxValue();
-				        
-				        linePath.lineTo(x, y);
-//				        erasePath.lineTo(x, y);
-				    }
-				    
-				    if(icon == null){
-				    	canvas.drawCircle(x, y, 4, pCircle);
-				    }else{
-				    	canvas.drawBitmapIcon(icon, x, y, null);
-				    }
+					if(j < mLineGraphVO.getArrGraph().get(i).getCoordinateArr().length){
+						
+						if (!firstSet) {
+							
+							x = xGap * j ;
+							y = yLength * mLineGraphVO.getArrGraph().get(i).getCoordinateArr()[j]/mLineGraphVO.getMaxValue();
+							
+							linePath.moveTo(x, y);
+							
+							firstSet = true;
+						} else {
+							x = xGap * j;
+							y = yLength * mLineGraphVO.getArrGraph().get(i).getCoordinateArr()[j]/mLineGraphVO.getMaxValue();
+							
+							linePath.lineTo(x, y);
+						}
+						
+						if(icon == null){
+							canvas.drawCircle(x, y, 4, pCircle);
+						}else{
+							canvas.drawBitmapIcon(icon, x, y, null);
+						}
+					}
+				}
+				
+				anim += 0.01f;
+				if(anim >= mLineGraphVO.getArrGraph().get(i).getCoordinateArr().length-1){
+					anim = mLineGraphVO.getArrGraph().get(i).getCoordinateArr().length;
 				}
 
-//							    erasePath.lineTo(getWidth(), y);
-//				erasePath.lineTo(x, 0);
-//				erasePath.lineTo(0, 0);
-
-//				canvas.drawPath(erasePath, pLine);
 				canvas.drawPath(linePath, p);
 			}
+		}
+
+		/**
+		 *	draw graph with animation 
+		 */
+		private void drawGraphWithAnimation(GraphCanvasWrapper canvas) {
+			//for draw animation
+			float prev_x = 0;
+			float prev_y = 0;
+			
+			float next_x = 0;
+			float next_y = 0;
+			
+			float value = 0;
+			float mode = 0;
+			
+			for (int i = 0; i < mLineGraphVO.getArrGraph().size(); i++) {
+				GraphPath linePath = new GraphPath(width, height, mLineGraphVO.getPaddingLeft(), mLineGraphVO.getPaddingBottom());
+				boolean firstSet = false;
+				float x = 0;
+				float y = 0;
+				p.setColor(mLineGraphVO.getArrGraph().get(i).getColor());
+				pCircle.setColor(mLineGraphVO.getArrGraph().get(i).getColor());
+				float xGap = xLength/(mLineGraphVO.getArrGraph().get(i).getCoordinateArr().length-1);
+				
+				Bitmap icon = arrIcon.get(i);
+				value = anim/1;
+				mode = anim %1;
+				
+				for (int j = 0; j < value+1; j++) {
+					if(j < mLineGraphVO.getArrGraph().get(i).getCoordinateArr().length){
+						
+						if (!firstSet) {
+							
+							x = xGap * j ;
+							y = yLength * mLineGraphVO.getArrGraph().get(i).getCoordinateArr()[j]/mLineGraphVO.getMaxValue();
+							
+							linePath.moveTo(x, y);
+							
+							firstSet = true;
+						} else {
+							x = xGap * j;
+							y = yLength * mLineGraphVO.getArrGraph().get(i).getCoordinateArr()[j]/mLineGraphVO.getMaxValue();
+							
+							if( j >= value ){
+								next_x = x - prev_x;
+								next_y = y - prev_y;
+								
+								linePath.lineTo(prev_x + next_x * mode, prev_y + next_y * mode);
+							}else{
+								linePath.lineTo(x, y);
+							}
+						}
+						
+						if(icon == null){
+							canvas.drawCircle(x, y, 4, pCircle);
+						}else{
+							canvas.drawBitmapIcon(icon, x, y, null);
+						}
+						prev_x = x;
+						prev_y = y;
+					}
+				}
+				
+				canvas.drawPath(linePath, p);
+			}
+			long curTime = System.currentTimeMillis();
+			long gapTime = curTime - animStartTime;
+			long animDuration = mLineGraphVO.getAnimation().getDuration();
+			if(gapTime >= animDuration){
+				gapTime = animDuration;
+				isDirty = false;
+			}
+			
+			anim = mLineGraphVO.getArrGraph().get(0).getCoordinateArr().length * (float)gapTime/(float)animDuration;
 		}
 		
 		/**

@@ -7,8 +7,9 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.ViewGroup;
 
+import com.handstudio.android.hzgrapherlib.animation.GraphAnimation;
 import com.handstudio.android.hzgrapherlib.graphview.GraphView;
-import com.handstudio.android.hzgrapherlib.vo.linegraph.Graph;
+import com.handstudio.android.hzgrapherlib.vo.linegraph.LineGraph;
 import com.handstudio.android.hzgrapherlib.vo.linegraph.LineGraphVO;
 
 public class MainActivity extends Activity {
@@ -44,10 +45,10 @@ public class MainActivity extends Activity {
 		float[] graph2 		= {000,100,200,100,200};
 		float[] graph3 		= {200,500,300,400,000};
 		
-		List<Graph> arrGraph 		= new ArrayList<Graph>();
-		arrGraph.add(new Graph(0xaa66ff33, graph1));
-		arrGraph.add(new Graph(0xaa00ffff, graph2));
-		arrGraph.add(new Graph(0xaaff0066, graph3));
+		List<LineGraph> arrGraph 		= new ArrayList<LineGraph>();
+		arrGraph.add(new LineGraph(0xaa66ff33, graph1));
+		arrGraph.add(new LineGraph(0xaa00ffff, graph2));
+		arrGraph.add(new LineGraph(0xaaff0066, graph3));
 		
 		LineGraphVO vo = new LineGraphVO(legendArr, arrGraph);
 		return vo;
@@ -77,15 +78,17 @@ public class MainActivity extends Activity {
 		float[] graph2 		= {000,100,200,100,200};
 		float[] graph3 		= {200,500,300,400,000};
 		
-		List<Graph> arrGraph 		= new ArrayList<Graph>();
+		List<LineGraph> arrGraph 		= new ArrayList<LineGraph>();
 		
-		arrGraph.add(new Graph(0xaa66ff33, graph1, R.drawable.ic_launcher));
-		arrGraph.add(new Graph(0xaa00ffff, graph2));
-		arrGraph.add(new Graph(0xaaff0066, graph3));
+		arrGraph.add(new LineGraph(0xaa66ff33, graph1, R.drawable.ic_launcher));
+		arrGraph.add(new LineGraph(0xaa00ffff, graph2));
+		arrGraph.add(new LineGraph(0xaaff0066, graph3));
 		
 		LineGraphVO vo = new LineGraphVO(
 				paddingBottom, paddingTop, paddingLeft, paddingRight,
 				marginTop, marginRight, maxValue, increment, legendArr, arrGraph);
+		
+		vo.setAnimation(new GraphAnimation(GraphAnimation.LINEAR_ANIMATION, GraphAnimation.DEFAULT_DURATION));
 		
 		//use icon
 //		arrGraph.add(new Graph(0xaa66ff33, graph1, R.drawable.icon1));
