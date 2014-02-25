@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.view.ViewGroup;
 
 import com.handstudio.android.hzgrapherlib.animation.GraphAnimation;
-import com.handstudio.android.hzgrapherlib.graphview.GraphView;
+import com.handstudio.android.hzgrapherlib.graphview.LineGraphView;
 import com.handstudio.android.hzgrapherlib.vo.linegraph.LineGraph;
 import com.handstudio.android.hzgrapherlib.vo.linegraph.LineGraphVO;
 
@@ -35,7 +35,7 @@ public class MainActivity extends Activity {
 		//default setting
 //		LineGraphVO vo = makeLineGraphDefaultSetting();
 		
-		layoutGraphView.addView(new GraphView(this, vo));
+		layoutGraphView.addView(new LineGraphView(this, vo));
 	}
 	
 	private LineGraphVO makeLineGraphDefaultSetting() {

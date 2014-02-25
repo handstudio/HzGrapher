@@ -24,7 +24,7 @@ import com.handstudio.android.hzgrapherlib.canvas.GraphCanvasWrapper;
 import com.handstudio.android.hzgrapherlib.path.GraphPath;
 import com.handstudio.android.hzgrapherlib.vo.linegraph.LineGraphVO;
 
-public class GraphView extends SurfaceView implements Callback{
+public class LineGraphView extends SurfaceView implements Callback{
 
 	public static final String TAG = "ChartView";
 	private SurfaceHolder mHolder;
@@ -34,18 +34,18 @@ public class GraphView extends SurfaceView implements Callback{
 	
 	
 	//Constructor
-	public GraphView(Context context, LineGraphVO vo) {
+	public LineGraphView(Context context, LineGraphVO vo) {
 		super(context);
 		mLineGraphVO = vo;
 		initView(context, vo);
 	}
 	
-	public GraphView(Context context, AttributeSet attrs) {
+	public LineGraphView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		initView(context, attrs, 0);
 	}
 	
-	public GraphView(Context context, AttributeSet attrs, int defStyle) {
+	public LineGraphView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs);
 		initView(context, attrs, defStyle);
 	}
