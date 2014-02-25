@@ -5,6 +5,7 @@ import java.util.WeakHashMap;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.LinearGradient;
@@ -175,6 +176,7 @@ public class LineGraphView extends SurfaceView implements Callback{
 		
 		@Override
 		public void run() {
+			Canvas canvas = null;
 			GraphCanvasWrapper graphCanvasWrapper = null;
 			Log.e(TAG,"height = " + height);
 			Log.e(TAG,"width = " + width);
@@ -196,26 +198,27 @@ public class LineGraphView extends SurfaceView implements Callback{
 					continue;
 				}
 				
-				graphCanvasWrapper = new GraphCanvasWrapper(mHolder.lockCanvas(), width, height, mLineGraphVO.getPaddingLeft(), mLineGraphVO.getPaddingBottom());
+				canvas = mHolder.lockCanvas();
+				graphCanvasWrapper = new GraphCanvasWrapper(canvas, width, height, mLineGraphVO.getPaddingLeft(), mLineGraphVO.getPaddingBottom());
 				
 				synchronized(mHolder){
 					synchronized (touchLock) {
 						
 						try {
 							//bg color
-							graphCanvasWrapper.drawColor(Color.WHITE);
+							canvas.drawColor(Color.WHITE);
 							if(bg != null){
-								graphCanvasWrapper.drawBitmap(bg, 0, 0, null);
+								canvas.drawBitmap(bg, 0, 0, null);
 							}
 
 							//TODO x coord dot line
 							drawBaseLine(graphCanvasWrapper);
 							
 							//y coord
-							graphCanvasWrapper.drawLine(0, 0, 0, chartYLength, pBaseLine);
+							graphCanvasWrapper.revDrawLine(0, 0, 0, chartYLength, pBaseLine);
 							
 							//x coord
-							graphCanvasWrapper.drawLine(0, 0, chartXLength, 0, pBaseLine);
+							graphCanvasWrapper.revDrawLine(0, 0, chartXLength, 0, pBaseLine);
 							
 							//TODO x, y coord mark
 							drawXMark(graphCanvasWrapper);
@@ -262,12 +265,12 @@ public class LineGraphView extends SurfaceView implements Callback{
 			}
 		}
 
-		private void drawBaseLine(GraphCanvasWrapper canvas) {
+		private void drawBaseLine(GraphCanvasWrapper graphCanvas) {
 			for (int i = 1; mLineGraphVO.getIncrement() * i <= mLineGraphVO.getMaxValue(); i++) {
 				
 				float y = yLength * mLineGraphVO.getIncrement() * i/mLineGraphVO.getMaxValue();
 				
-				canvas.drawLine(0, y, chartXLength, y, pBaseLineX);
+				graphCanvas.revDrawLine(0, y, chartXLength, y, pBaseLineX);
 			}
 		}
 
@@ -322,19 +325,19 @@ public class LineGraphView extends SurfaceView implements Callback{
 		/**
 		 * draw Graph
 		 */
-		private void drawGraph(GraphCanvasWrapper canvas) {
+		private void drawGraph(GraphCanvasWrapper graphCanvas) {
 			
 			if (isAnimation){
-				drawGraphWithAnimation(canvas);
+				drawGraphWithAnimation(graphCanvas);
 			}else{
-				drawGraphWithoutAnimation(canvas);
+				drawGraphWithoutAnimation(graphCanvas);
 			}
 		}
 		
 		/**
 		 *	draw graph without animation 
 		 */
-		private void drawGraphWithoutAnimation(GraphCanvasWrapper canvas) {
+		private void drawGraphWithoutAnimation(GraphCanvasWrapper graphCanvas) {
 			
 			for (int i = 0; i < mLineGraphVO.getArrGraph().size(); i++) {
 				GraphPath linePath = new GraphPath(width, height, mLineGraphVO.getPaddingLeft(), mLineGraphVO.getPaddingBottom());
@@ -366,9 +369,9 @@ public class LineGraphView extends SurfaceView implements Callback{
 						}
 						
 						if(icon == null){
-							canvas.drawCircle(x, y, 4, pCircle);
+							graphCanvas.revDrawCircle(x, y, 4, pCircle);
 						}else{
-							canvas.drawBitmapIcon(icon, x, y, null);
+							graphCanvas.revDrawBitmapIcon(icon, x, y, null);
 						}
 					}
 				}
@@ -378,14 +381,14 @@ public class LineGraphView extends SurfaceView implements Callback{
 					anim = mLineGraphVO.getArrGraph().get(i).getCoordinateArr().length;
 				}
 
-				canvas.drawPath(linePath, p);
+				graphCanvas.getCanvas().drawPath(linePath, p);
 			}
 		}
 
 		/**
 		 *	draw graph with animation 
 		 */
-		private void drawGraphWithAnimation(GraphCanvasWrapper canvas) {
+		private void drawGraphWithAnimation(GraphCanvasWrapper graphCanvas) {
 			//for draw animation
 			float prev_x = 0;
 			float prev_y = 0;
@@ -435,16 +438,16 @@ public class LineGraphView extends SurfaceView implements Callback{
 						}
 						
 						if(icon == null){
-							canvas.drawCircle(x, y, 4, pCircle);
+							graphCanvas.revDrawCircle(x, y, 4, pCircle);
 						}else{
-							canvas.drawBitmapIcon(icon, x, y, null);
+							graphCanvas.revDrawBitmapIcon(icon, x, y, null);
 						}
 						prev_x = x;
 						prev_y = y;
 					}
 				}
 				
-				canvas.drawPath(linePath, p);
+				graphCanvas.getCanvas().drawPath(linePath, p);
 			}
 			long curTime = System.currentTimeMillis();
 			long gapTime = curTime - animStartTime;
@@ -463,7 +466,7 @@ public class LineGraphView extends SurfaceView implements Callback{
 		/**
 		 * draw X Mark
 		 */
-		private void drawXMark(GraphCanvasWrapper canvas) {
+		private void drawXMark(GraphCanvasWrapper graphCanvas) {
 			float x = 0;
 			float y = 0;
 			
@@ -472,7 +475,7 @@ public class LineGraphView extends SurfaceView implements Callback{
 			        x = xGap * i;
 			        y = yLength * mLineGraphVO.getArrGraph().get(0).getCoordinateArr()[i]/mLineGraphVO.getMaxValue();
 			        
-			    canvas.drawLine(x, 0, x, -10, pBaseLine);
+			    graphCanvas.revDrawLine(x, 0, x, -10, pBaseLine);
 			}
 		}
 		
@@ -484,14 +487,14 @@ public class LineGraphView extends SurfaceView implements Callback{
 				
 				float y = yLength * mLineGraphVO.getIncrement() * i/mLineGraphVO.getMaxValue();
 				
-				canvas.drawLine(0, y, -10, y, pBaseLine);
+				canvas.revDrawLine(0, y, -10, y, pBaseLine);
 			}
 		}
 		
 		/**
 		 * draw X Text
 		 */
-		private void drawXText(GraphCanvasWrapper canvas) {
+		private void drawXText(GraphCanvasWrapper graphCanvas) {
 			float x = 0;
 			float y = 0;
 			
@@ -505,14 +508,14 @@ public class LineGraphView extends SurfaceView implements Callback{
 					Rect rect = new Rect();
 					pMarkText.getTextBounds(text, 0, text.length(), rect);
 					
-			    canvas.drawText(text, x -(rect.width()/2), -(20 + rect.height()), pMarkText);
+			    graphCanvas.revDrawText(text, x -(rect.width()/2), -(20 + rect.height()), pMarkText);
 			}
 		}
 		
 		/**
 		 * draw Y Text
 		 */
-		private void drawYText(GraphCanvasWrapper canvas) {
+		private void drawYText(GraphCanvasWrapper graphCanvas) {
 			for (int i = 0; mLineGraphVO.getIncrement() * i <= mLineGraphVO.getMaxValue(); i++) {
 				
 				String mark = Float.toString(mLineGraphVO.getIncrement() * i);
@@ -523,7 +526,7 @@ public class LineGraphView extends SurfaceView implements Callback{
 				pMarkText.getTextBounds(mark, 0, mark.length(), rect);
 //				Log.e(TAG, "rect = height()" + rect.height());
 //				Log.e(TAG, "rect = width()" + rect.width());
-				canvas.drawText(mark, -(rect.width() + 20), y-rect.height()/2, pMarkText);
+				graphCanvas.revDrawText(mark, -(rect.width() + 20), y-rect.height()/2, pMarkText);
 			}
 		}
 	}
