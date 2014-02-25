@@ -424,7 +424,7 @@ public class GraphView extends SurfaceView implements Callback{
 							x = xGap * j;
 							y = yLength * mLineGraphVO.getArrGraph().get(i).getCoordinateArr()[j]/mLineGraphVO.getMaxValue();
 							
-							if( j >= value ){
+							if( j > value ){
 								next_x = x - prev_x;
 								next_y = y - prev_y;
 								
@@ -455,10 +455,13 @@ public class GraphView extends SurfaceView implements Callback{
 			}
 			
 			anim = mLineGraphVO.getArrGraph().get(0).getCoordinateArr().length * (float)gapTime/(float)animDuration;
+			
+//			Log.e(TAG,"curTime = " + curTime + " , animStartTime = " + animStartTime);
+//			Log.e(TAG,"anim = " + anim + " , gapTime = " + gapTime);
 		}
 		
 		/**
-		 * draw X Makr
+		 * draw X Mark
 		 */
 		private void drawXMark(GraphCanvasWrapper canvas) {
 			float x = 0;
@@ -474,7 +477,7 @@ public class GraphView extends SurfaceView implements Callback{
 		}
 		
 		/**
-		 * draw Y Makr
+		 * draw Y Mark
 		 */
 		private void drawYMark(GraphCanvasWrapper canvas) {
 			for (int i = 0; mLineGraphVO.getIncrement() * i <= mLineGraphVO.getMaxValue(); i++) {
