@@ -1,4 +1,4 @@
 HzGrapher
 =========
 
-android hz graph libaray
+android hz graph library
