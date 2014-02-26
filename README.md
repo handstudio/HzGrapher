@@ -11,3 +11,4 @@ Feature
 -------
 + easy to customize
 + free of layout size
++ graph draw animation
