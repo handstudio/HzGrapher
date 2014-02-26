@@ -3,6 +3,11 @@ HzGrapher
 
 android hz graph library
 
+Function
+--------
++ Line Graph
+
 Feature
-=======
-flexable
+-------
++ easy to customize
++ free of layout size
