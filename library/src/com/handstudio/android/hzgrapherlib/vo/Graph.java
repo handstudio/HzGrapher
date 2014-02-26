@@ -18,6 +18,8 @@ public class Graph {
 	private int marginTop 		= DEFAULT_MARGIN_TOP;
 	private int marginRight 	= DEFAULT_MARGIN_RIGHT;
 	
+	private GraphNameBox graphNameBox = null;	
+	
 	public Graph() {
 		
 	}
@@ -66,5 +68,11 @@ public class Graph {
 	}
 	public void setMarginRight(int marginRight) {
 		this.marginRight = marginRight;
+	}
+	public GraphNameBox getGraphNameBox() {
+		return graphNameBox;
+	}
+	public void setGraphNameBox(GraphNameBox graphNameBox) {
+		this.graphNameBox = graphNameBox;
 	}
 }

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.handstudio.android.hzgrapherlib.animation.GraphAnimation;
 import com.handstudio.android.hzgrapherlib.graphview.LineGraphView;
+import com.handstudio.android.hzgrapherlib.vo.GraphNameBox;
 import com.handstudio.android.hzgrapherlib.vo.linegraph.LineGraph;
 import com.handstudio.android.hzgrapherlib.vo.linegraph.LineGraphVO;
 
@@ -38,6 +39,10 @@ public class MainActivity extends Activity {
 		layoutGraphView.addView(new LineGraphView(this, vo));
 	}
 	
+	/**
+	 * make simple line graph
+	 * @return
+	 */
 	private LineGraphVO makeLineGraphDefaultSetting() {
 		
 		String[] legendArr 	= {"1","2","3","4","5"};
@@ -46,14 +51,18 @@ public class MainActivity extends Activity {
 		float[] graph3 		= {200,500,300,400,000};
 		
 		List<LineGraph> arrGraph 		= new ArrayList<LineGraph>();
-		arrGraph.add(new LineGraph(0xaa66ff33, graph1));
-		arrGraph.add(new LineGraph(0xaa00ffff, graph2));
-		arrGraph.add(new LineGraph(0xaaff0066, graph3));
+		arrGraph.add(new LineGraph("android", 0xaa66ff33, graph1));
+		arrGraph.add(new LineGraph("ios", 0xaa00ffff, graph2));
+		arrGraph.add(new LineGraph("tizen", 0xaaff0066, graph3));
 		
 		LineGraphVO vo = new LineGraphVO(legendArr, arrGraph);
 		return vo;
 	}
 
+	/**
+	 * make line graph using options
+	 * @return
+	 */
 	private LineGraphVO makeLineGraphAllSetting() {
 		//BASIC LAYOUT SETTING
 		//padding
@@ -80,15 +89,18 @@ public class MainActivity extends Activity {
 		
 		List<LineGraph> arrGraph 		= new ArrayList<LineGraph>();
 		
-		arrGraph.add(new LineGraph(0xaa66ff33, graph1, R.drawable.ic_launcher));
-		arrGraph.add(new LineGraph(0xaa00ffff, graph2));
-		arrGraph.add(new LineGraph(0xaaff0066, graph3));
+		arrGraph.add(new LineGraph("android", 0xaa66ff33, graph1, R.drawable.ic_launcher));
+		arrGraph.add(new LineGraph("ios", 0xaa00ffff, graph2));
+		arrGraph.add(new LineGraph("tizen", 0xaaff0066, graph3));
 		
 		LineGraphVO vo = new LineGraphVO(
 				paddingBottom, paddingTop, paddingLeft, paddingRight,
 				marginTop, marginRight, maxValue, increment, legendArr, arrGraph);
 		
+		//set animation
 		vo.setAnimation(new GraphAnimation(GraphAnimation.LINEAR_ANIMATION, GraphAnimation.DEFAULT_DURATION));
+		//set graph name box
+		vo.setGraphNameBox(new GraphNameBox());
 		
 		//use icon
 //		arrGraph.add(new Graph(0xaa66ff33, graph1, R.drawable.icon1));

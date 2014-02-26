@@ -3,21 +3,30 @@ package com.handstudio.android.hzgrapherlib.vo.linegraph;
 import android.graphics.Color;
 
 public class LineGraph {
+	private String name = null;
 	private int color = Color.BLUE;
 	private float[] coordinateArr = null;
 	private int bitmapResource = -1;
 	
-	public LineGraph(int color, float[] coordinateArr) {
+	public LineGraph(String name, int color, float[] coordinateArr) {
+		this.name = name;
 		this.color = color;
 		this.setCoordinateArr(coordinateArr);
 	}
 	
-	public LineGraph(int color, float[] coordinateArr, int bitmapResource) {
+	public LineGraph(String name, int color, float[] coordinateArr, int bitmapResource) {
+		this.name = name;
 		this.color = color;
 		this.setCoordinateArr(coordinateArr);
 		this.bitmapResource = bitmapResource;
 	}
 
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
 	public int getColor() {
 		return color;
 	}

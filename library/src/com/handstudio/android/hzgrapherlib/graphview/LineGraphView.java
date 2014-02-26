@@ -23,6 +23,7 @@ import android.view.SurfaceView;
 
 import com.handstudio.android.hzgrapherlib.canvas.GraphCanvasWrapper;
 import com.handstudio.android.hzgrapherlib.path.GraphPath;
+import com.handstudio.android.hzgrapherlib.vo.GraphNameBox;
 import com.handstudio.android.hzgrapherlib.vo.linegraph.LineGraphVO;
 
 public class LineGraphView extends SurfaceView implements Callback{
@@ -141,6 +142,11 @@ public class LineGraphView extends SurfaceView implements Callback{
 		Paint pBaseLineX = new Paint();
 		Paint pMarkText = new Paint();
 		
+		//animation
+		float anim = 0.0f;
+		boolean isAnimation = false;
+		long animStartTime = -1;
+		
 		WeakHashMap<Integer, Bitmap> arrIcon = new WeakHashMap<Integer, Bitmap>();
 		Bitmap bg = null;
 		public DrawThread(SurfaceHolder holder, Context context) {
@@ -169,10 +175,6 @@ public class LineGraphView extends SurfaceView implements Callback{
 		public void setRunFlag(boolean bool){
 			isRun = bool;
 		}
-		
-		private float anim = 0.0f;
-		private boolean isAnimation = false;
-		private long animStartTime = -1;
 		
 		@Override
 		public void run() {
@@ -215,10 +217,10 @@ public class LineGraphView extends SurfaceView implements Callback{
 							drawBaseLine(graphCanvasWrapper);
 							
 							//y coord
-							graphCanvasWrapper.revDrawLine(0, 0, 0, chartYLength, pBaseLine);
+							graphCanvasWrapper.drawLine(0, 0, 0, chartYLength, pBaseLine);
 							
 							//x coord
-							graphCanvasWrapper.revDrawLine(0, 0, chartXLength, 0, pBaseLine);
+							graphCanvasWrapper.drawLine(0, 0, chartXLength, 0, pBaseLine);
 							
 							//TODO x, y coord mark
 							drawXMark(graphCanvasWrapper);
@@ -230,6 +232,8 @@ public class LineGraphView extends SurfaceView implements Callback{
 							
 							//TODO chart
 							drawGraph(graphCanvasWrapper);
+							
+							drawGraphName(canvas);
 							
 //							isDirty = false;
 							
@@ -254,6 +258,92 @@ public class LineGraphView extends SurfaceView implements Callback{
 			}
 		}
 
+		private void drawGraphName(Canvas canvas) {
+			GraphNameBox gnb = mLineGraphVO.getGraphNameBox();
+			if(gnb != null){
+				int nameboxWidth = 0;
+				int nameboxHeight = 0;
+				
+				int nameboxIconWidth = gnb.getNameboxIconWidth();
+				int nameboxIconHeight = gnb.getNameboxIconHeight();
+				
+				int nameboxMarginTop = gnb.getNameboxMarginTop();
+				int nameboxMarginRight = gnb.getNameboxMarginRight();
+				int nameboxPadding = gnb.getNameboxPadding();
+				
+				int nameboxTextIconMargin = gnb.getNameboxIconMargin();
+				int nameboxIconMargin = gnb.getNameboxIconMargin();
+				int nameboxTextSize = gnb.getNameboxTextSize(); 
+				
+				int maxTextWidth = 0;
+				int maxTextHeight = 0;
+				
+				Paint nameRextPaint = new Paint();
+				nameRextPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
+				nameRextPaint.setAntiAlias(true); //text anti alias
+				nameRextPaint.setFilterBitmap(true); // bitmap anti alias
+				nameRextPaint.setColor(Color.BLUE);
+				nameRextPaint.setStrokeWidth(3);
+				nameRextPaint.setStyle(Style.STROKE);
+				
+				Paint pIcon = new Paint();
+				pIcon.setFlags(Paint.ANTI_ALIAS_FLAG);
+				pIcon.setAntiAlias(true); //text anti alias
+				pIcon.setFilterBitmap(true); // bitmap anti alias
+				pIcon.setColor(Color.BLUE);
+				pIcon.setStrokeWidth(3);
+				pIcon.setStyle(Style.FILL_AND_STROKE);
+				
+				
+				Paint pNameText = new Paint();
+				pNameText.setFlags(Paint.ANTI_ALIAS_FLAG);
+				pNameText.setAntiAlias(true); //text anti alias
+				pNameText.setTextSize(nameboxTextSize);
+				pNameText.setColor(Color.BLACK); 
+				
+				
+				int graphSize = mLineGraphVO.getArrGraph().size();
+				for (int i = 0; i < graphSize; i++) {
+					
+					
+					String text = mLineGraphVO.getArrGraph().get(i).getName();
+					Rect rect = new Rect();
+					pNameText.getTextBounds(text, 0, text.length(), rect);
+					
+					if(rect.width() > maxTextWidth){
+						maxTextWidth = rect.width();
+						maxTextHeight = rect.height();
+					}
+					
+					mLineGraphVO.getArrGraph().get(i).getName();
+					
+				}
+				mLineGraphVO.getArrGraph().get(0).getName();
+				nameboxWidth = 1 * maxTextWidth + nameboxTextIconMargin + nameboxIconWidth;
+				int maxCellHight = maxTextHeight;
+				if(nameboxIconHeight > maxTextHeight){
+					maxCellHight = nameboxIconHeight;
+				}
+				nameboxHeight = graphSize * maxCellHight + (graphSize-1) * nameboxIconMargin;
+				
+				canvas.drawRect(width - (nameboxMarginRight + nameboxWidth) - nameboxPadding*2,
+						nameboxMarginTop, width - nameboxMarginRight, nameboxMarginTop + nameboxHeight + nameboxPadding*2, nameRextPaint);
+				
+				for (int i = 0; i < graphSize; i++) {
+					
+					pIcon.setColor(mLineGraphVO.getArrGraph().get(i).getColor());
+					canvas.drawRect(width - (nameboxMarginRight + nameboxWidth) - nameboxPadding,
+							nameboxMarginTop + (maxCellHight * i) + nameboxPadding + (nameboxIconMargin * i), 
+							width - (nameboxMarginRight + maxTextWidth) - nameboxPadding - nameboxTextIconMargin, 
+							nameboxMarginTop + maxCellHight * (i+1) + nameboxPadding + nameboxIconMargin * i, pIcon);
+					
+					String text = mLineGraphVO.getArrGraph().get(i).getName();
+					canvas.drawText(text, width - (nameboxMarginRight + maxTextWidth) - nameboxPadding, 
+							nameboxMarginTop + maxTextHeight/2 + maxCellHight * i + maxCellHight/2 + nameboxPadding  + nameboxIconMargin * i, pNameText);
+				}
+			}
+		}
+
 		/**
 		 * check graph line animation
 		 */
@@ -270,7 +360,7 @@ public class LineGraphView extends SurfaceView implements Callback{
 				
 				float y = yLength * mLineGraphVO.getIncrement() * i/mLineGraphVO.getMaxValue();
 				
-				graphCanvas.revDrawLine(0, y, chartXLength, y, pBaseLineX);
+				graphCanvas.drawLine(0, y, chartXLength, y, pBaseLineX);
 			}
 		}
 
@@ -369,9 +459,9 @@ public class LineGraphView extends SurfaceView implements Callback{
 						}
 						
 						if(icon == null){
-							graphCanvas.revDrawCircle(x, y, 4, pCircle);
+							graphCanvas.drawCircle(x, y, 4, pCircle);
 						}else{
-							graphCanvas.revDrawBitmapIcon(icon, x, y, null);
+							graphCanvas.drawBitmapIcon(icon, x, y, null);
 						}
 					}
 				}
@@ -438,9 +528,9 @@ public class LineGraphView extends SurfaceView implements Callback{
 						}
 						
 						if(icon == null){
-							graphCanvas.revDrawCircle(x, y, 4, pCircle);
+							graphCanvas.drawCircle(x, y, 4, pCircle);
 						}else{
-							graphCanvas.revDrawBitmapIcon(icon, x, y, null);
+							graphCanvas.drawBitmapIcon(icon, x, y, null);
 						}
 						prev_x = x;
 						prev_y = y;
@@ -475,7 +565,7 @@ public class LineGraphView extends SurfaceView implements Callback{
 			        x = xGap * i;
 			        y = yLength * mLineGraphVO.getArrGraph().get(0).getCoordinateArr()[i]/mLineGraphVO.getMaxValue();
 			        
-			    graphCanvas.revDrawLine(x, 0, x, -10, pBaseLine);
+			    graphCanvas.drawLine(x, 0, x, -10, pBaseLine);
 			}
 		}
 		
@@ -487,7 +577,7 @@ public class LineGraphView extends SurfaceView implements Callback{
 				
 				float y = yLength * mLineGraphVO.getIncrement() * i/mLineGraphVO.getMaxValue();
 				
-				canvas.revDrawLine(0, y, -10, y, pBaseLine);
+				canvas.drawLine(0, y, -10, y, pBaseLine);
 			}
 		}
 		
@@ -508,7 +598,7 @@ public class LineGraphView extends SurfaceView implements Callback{
 					Rect rect = new Rect();
 					pMarkText.getTextBounds(text, 0, text.length(), rect);
 					
-			    graphCanvas.revDrawText(text, x -(rect.width()/2), -(20 + rect.height()), pMarkText);
+			    graphCanvas.drawText(text, x -(rect.width()/2), -(20 + rect.height()), pMarkText);
 			}
 		}
 		
@@ -526,7 +616,7 @@ public class LineGraphView extends SurfaceView implements Callback{
 				pMarkText.getTextBounds(mark, 0, mark.length(), rect);
 //				Log.e(TAG, "rect = height()" + rect.height());
 //				Log.e(TAG, "rect = width()" + rect.width());
-				graphCanvas.revDrawText(mark, -(rect.width() + 20), y-rect.height()/2, pMarkText);
+				graphCanvas.drawText(mark, -(rect.width() + 20), y-rect.height()/2, pMarkText);
 			}
 		}
 	}

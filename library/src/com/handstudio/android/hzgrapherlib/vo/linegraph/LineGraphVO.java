@@ -14,10 +14,10 @@ public class LineGraphVO extends Graph{
 	private int increment 		= DEFAULT_INCREMENT;
 	
 	//animation
-	private GraphAnimation animation = null;
+	private GraphAnimation animation 	= null;
 	
 	private String[] legendArr 			= null;
-	private List<LineGraph> arrGraph 		= null;
+	private List<LineGraph> arrGraph 	= null;
 	
 	private int graphBG = -1;
 	
