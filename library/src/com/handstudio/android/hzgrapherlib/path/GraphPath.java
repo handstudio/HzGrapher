@@ -1,8 +1,9 @@
 package com.handstudio.android.hzgrapherlib.path;
 
-import com.handstudio.android.hzgrapherlib.util.MatrixTranslator;
-
 import android.graphics.Path;
+import android.graphics.PointF;
+
+import com.handstudio.android.hzgrapherlib.util.MatrixTranslator;
 
 public class GraphPath extends Path {
 	
@@ -17,8 +18,16 @@ public class GraphPath extends Path {
 		super.moveTo(mMt.calcX(x), mMt.calcY(y));
 	}
 	
+	public void moveTo(PointF point) {
+		super.moveTo(mMt.calcX(point.x), mMt.calcY(point.y));
+	}
+	
 	@Override
 	public void lineTo(float x, float y) {
 		super.lineTo(mMt.calcX(x), mMt.calcY(y));
+	}
+	
+	public void lineTo(PointF point) {
+		super.lineTo(mMt.calcX(point.x), mMt.calcY(point.y));
 	}
 }

@@ -1,9 +1,8 @@
 package com.handstudio.android.hzgrapherlib.util;
 
 import android.graphics.Bitmap;
-import android.graphics.Path;
 
-public class MatrixTranslator extends Path {
+public class MatrixTranslator {
 	
 	private int mWidth;
 	private int mHeight;
