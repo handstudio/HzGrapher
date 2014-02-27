@@ -423,10 +423,10 @@ public class LineComapreGraphView extends SurfaceView implements Callback{
 		private void drawGraph(GraphCanvasWrapper graphCanvas) {
 			
 			if (isAnimation){
-				drawGraphCompareBGWithAnimation(graphCanvas);
+				drawGraphCompareRegionWithAnimation(graphCanvas);
 				drawGraphWithAnimation(graphCanvas);
 			}else{
-				drawGraphCompareBGWithoutAnimation(graphCanvas);
+				drawGraphCompareRegionWithoutAnimation(graphCanvas);
 				drawGraphWithoutAnimation(graphCanvas);
 			}
 		}
@@ -491,7 +491,7 @@ public class LineComapreGraphView extends SurfaceView implements Callback{
 			}
 		}
 		
-		private void drawGraphCompareBGWithoutAnimation(GraphCanvasWrapper graphCanvas) {
+		private void drawGraphCompareRegionWithoutAnimation(GraphCanvasWrapper graphCanvas) {
 			Canvas c = new Canvas(b);
 			b.eraseColor(Color.TRANSPARENT);
 			
@@ -644,7 +644,7 @@ public class LineComapreGraphView extends SurfaceView implements Callback{
 		/**
 		 *	draw graph with animation 
 		 */
-		private void drawGraphCompareBGWithAnimation(GraphCanvasWrapper graphCanvas) {
+		private void drawGraphCompareRegionWithAnimation(GraphCanvasWrapper graphCanvas) {
 			//for draw animation
 			float prev_x = 0;
 			float prev_y = 0;

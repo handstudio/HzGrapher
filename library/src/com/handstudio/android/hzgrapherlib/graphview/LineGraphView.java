@@ -429,8 +429,11 @@ public class LineGraphView extends SurfaceView implements Callback{
 		 */
 		private void drawGraphWithoutAnimation(GraphCanvasWrapper graphCanvas) {
 			
+			boolean isDrawRegion = mLineGraphVO.isDrawRegion();
+			
 			for (int i = 0; i < mLineGraphVO.getArrGraph().size(); i++) {
 				GraphPath linePath = new GraphPath(width, height, mLineGraphVO.getPaddingLeft(), mLineGraphVO.getPaddingBottom());
+				GraphPath regionPath = new GraphPath(width, height, mLineGraphVO.getPaddingLeft(), mLineGraphVO.getPaddingBottom());
 				boolean firstSet = false;
 				float x = 0;
 				float y = 0;
@@ -450,12 +453,20 @@ public class LineGraphView extends SurfaceView implements Callback{
 							
 							linePath.moveTo(x, y);
 							
+							if(isDrawRegion){
+								regionPath.moveTo(x, 0);
+								regionPath.lineTo(x, y);
+							}
+							
 							firstSet = true;
 						} else {
 							x = xGap * j;
 							y = yLength * mLineGraphVO.getArrGraph().get(i).getCoordinateArr()[j]/mLineGraphVO.getMaxValue();
 							
 							linePath.lineTo(x, y);
+							if(isDrawRegion){
+								regionPath.lineTo(x, y);
+							}
 						}
 						
 						if(icon == null){
@@ -471,6 +482,18 @@ public class LineGraphView extends SurfaceView implements Callback{
 					anim = mLineGraphVO.getArrGraph().get(i).getCoordinateArr().length;
 				}
 
+				if(isDrawRegion){
+					regionPath.lineTo(x, 0);
+					regionPath.lineTo(0, 0);
+					
+					Paint pBg = new Paint();
+					pBg.setFlags(Paint.ANTI_ALIAS_FLAG);
+					pBg.setAntiAlias(true); //text anti alias
+					pBg.setFilterBitmap(true); // bitmap anti alias
+					pBg.setStyle(Style.FILL);
+					pBg.setColor(mLineGraphVO.getArrGraph().get(i).getColor());
+					graphCanvas.getCanvas().drawPath(regionPath, pBg);
+				}
 				graphCanvas.getCanvas().drawPath(linePath, p);
 			}
 		}
@@ -489,8 +512,11 @@ public class LineGraphView extends SurfaceView implements Callback{
 			float value = 0;
 			float mode = 0;
 			
+			boolean isDrawRegion = mLineGraphVO.isDrawRegion();
+			
 			for (int i = 0; i < mLineGraphVO.getArrGraph().size(); i++) {
 				GraphPath linePath = new GraphPath(width, height, mLineGraphVO.getPaddingLeft(), mLineGraphVO.getPaddingBottom());
+				GraphPath regionPath = new GraphPath(width, height, mLineGraphVO.getPaddingLeft(), mLineGraphVO.getPaddingBottom());
 				boolean firstSet = false;
 				float x = 0;
 				float y = 0;
@@ -512,6 +538,11 @@ public class LineGraphView extends SurfaceView implements Callback{
 							
 							linePath.moveTo(x, y);
 							
+							if(isDrawRegion){
+								regionPath.moveTo(x, 0);
+								regionPath.lineTo(x, y);
+							}
+							
 							firstSet = true;
 						} else {
 							x = xGap * j;
@@ -522,8 +553,14 @@ public class LineGraphView extends SurfaceView implements Callback{
 								next_y = y - prev_y;
 								
 								linePath.lineTo(prev_x + next_x * mode, prev_y + next_y * mode);
+								if(isDrawRegion){
+									regionPath.lineTo(prev_x + next_x * mode, prev_y + next_y * mode);
+								}
 							}else{
 								linePath.lineTo(x, y);
+								if(isDrawRegion){
+									regionPath.lineTo(x, y);
+								}
 							}
 						}
 						
@@ -537,6 +574,18 @@ public class LineGraphView extends SurfaceView implements Callback{
 					}
 				}
 				
+				if(isDrawRegion){
+					regionPath.lineTo(x, 0);
+					regionPath.lineTo(0, 0);
+					
+					Paint pBg = new Paint();
+					pBg.setFlags(Paint.ANTI_ALIAS_FLAG);
+					pBg.setAntiAlias(true); //text anti alias
+					pBg.setFilterBitmap(true); // bitmap anti alias
+					pBg.setStyle(Style.FILL);
+					pBg.setColor(mLineGraphVO.getArrGraph().get(i).getColor());
+					graphCanvas.getCanvas().drawPath(regionPath, pBg);
+				}
 				graphCanvas.getCanvas().drawPath(linePath, p);
 			}
 			long curTime = System.currentTimeMillis();

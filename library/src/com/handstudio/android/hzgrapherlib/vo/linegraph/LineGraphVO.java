@@ -21,6 +21,8 @@ public class LineGraphVO extends Graph{
 	
 	private int graphBG = -1;
 	
+	private boolean isDrawRegion 		= false;
+	
 	public LineGraphVO(String[] legendArr, List<LineGraph> arrGraph) {
 		super();
 		this.setLegendArr(legendArr);
@@ -101,5 +103,13 @@ public class LineGraphVO extends Graph{
 
 	public void setAnimation(GraphAnimation animation) {
 		this.animation = animation;
+	}
+
+	public boolean isDrawRegion() {
+		return isDrawRegion;
+	}
+
+	public void setDrawRegion(boolean isDrawRegion) {
+		this.isDrawRegion = isDrawRegion;
 	}
 }

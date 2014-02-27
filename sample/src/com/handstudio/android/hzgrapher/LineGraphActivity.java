@@ -31,10 +31,10 @@ public class LineGraphActivity extends Activity {
 
 	private void setLineGraph() {
 		//all setting
-//		LineGraphVO vo = makeLineGraphAllSetting();
+		LineGraphVO vo = makeLineGraphAllSetting();
 		
 		//default setting
-		LineGraphVO vo = makeLineGraphDefaultSetting();
+//		LineGraphVO vo = makeLineGraphDefaultSetting();
 		
 		layoutGraphView.addView(new LineGraphView(this, vo));
 	}
@@ -101,6 +101,8 @@ public class LineGraphActivity extends Activity {
 		vo.setAnimation(new GraphAnimation(GraphAnimation.LINEAR_ANIMATION, GraphAnimation.DEFAULT_DURATION));
 		//set graph name box
 		vo.setGraphNameBox(new GraphNameBox());
+		//set draw graph region
+//		vo.setDrawRegion(true);
 		
 		//use icon
 //		arrGraph.add(new Graph(0xaa66ff33, graph1, R.drawable.icon1));
