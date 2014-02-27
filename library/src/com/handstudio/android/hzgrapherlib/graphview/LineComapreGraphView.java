@@ -1,5 +1,6 @@
 package com.handstudio.android.hzgrapherlib.graphview;
 
+import java.util.ArrayList;
 import java.util.WeakHashMap;
 
 import android.content.Context;
@@ -422,37 +423,14 @@ public class LineComapreGraphView extends SurfaceView implements Callback{
 		private void drawGraph(GraphCanvasWrapper graphCanvas) {
 			
 			if (isAnimation){
+				drawGraphCompareBGWithAnimation(graphCanvas);
 				drawGraphWithAnimation(graphCanvas);
 			}else{
-				drawGraphCompareBG(graphCanvas);
+				drawGraphCompareBGWithoutAnimation(graphCanvas);
 				drawGraphWithoutAnimation(graphCanvas);
 			}
 		}
 		
-//		private void makePolygon(){
-//			ArrayList<GraphPath> arrPolyonPath= new ArrayList<GraphPath>();
-//			GraphPath polygonPath = new GraphPath(width, height, mLineGraphVO.getPaddingLeft(), mLineGraphVO.getPaddingBottom());
-//			
-//			boolean firstSet = true;
-//			float xGap = xLength/(mLineGraphVO.getArrGraph().get(0).getCoordinateArr().length-1);
-//			
-//			int index = 0;
-//			PointF intersectPoint = arrIntersectPoint.get(index);
-//			for (int j = 0; j < mLineGraphVO.getArrGraph().get(0).getCoordinateArr().length-1; j++) {
-//				float x = xGap * j ;
-//				float y1 = yLength * mLineGraphVO.getArrGraph().get(0).getCoordinateArr()[j]/mLineGraphVO.getMaxValue();
-//				float y2 = yLength * mLineGraphVO.getArrGraph().get(1).getCoordinateArr()[j]/mLineGraphVO.getMaxValue();
-//				
-//				if(firstSet){
-//					polygonPath.lineTo(x, y1);
-//					polygonPath.moveTo(x, y2);
-//				}else{
-//					
-//				}
-//			}
-//		}
-//		
-//		private ArrayList<PointF> arrIntersectPoint = new ArrayList<PointF>();
 		/**
 		 *	draw graph without animation 
 		 */
@@ -513,36 +491,7 @@ public class LineComapreGraphView extends SurfaceView implements Callback{
 			}
 		}
 		
-		private void drawGraphCompareBG(GraphCanvasWrapper graphCanvas) {
-//			{
-//				float xGap = xLength/(mLineGraphVO.getArrGraph().get(0).getCoordinateArr().length-1);
-//				for (int j = 0; j < mLineGraphVO.getArrGraph().get(0).getCoordinateArr().length-1; j++) {
-//					float x = xGap * j ;
-//					float x_next = xGap * (j+1) ;
-//					float y1 = yLength * mLineGraphVO.getArrGraph().get(0).getCoordinateArr()[j]/mLineGraphVO.getMaxValue();
-//					float y1_next = yLength * mLineGraphVO.getArrGraph().get(0).getCoordinateArr()[j+1]/mLineGraphVO.getMaxValue();
-//					float y2 = yLength * mLineGraphVO.getArrGraph().get(1).getCoordinateArr()[j]/mLineGraphVO.getMaxValue();
-//					float y2_next = yLength * mLineGraphVO.getArrGraph().get(1).getCoordinateArr()[j+1]/mLineGraphVO.getMaxValue();
-//
-//					PointF p1 = new PointF(x, y1);
-//					PointF p2 = new PointF(x_next, y1_next);
-//					PointF p3 = new PointF(x, y2);
-//					PointF p4 = new PointF(x_next, y2_next);
-//					
-//					PointF intersectPoint = IntersectFinder.getIntersectPoint(p1, p2, p3, p4);
-//					Log.e(TAG,"p1.x = " + p1.x + " p1.y = " + p1.y );
-//					Log.e(TAG,"p2.x = " + p2.x + " p2.y = " + p2.y );
-//					Log.e(TAG,"p3.x = " + p3.x + " p3.y = " + p3.y );
-//					Log.e(TAG,"p4.x = " + p4.x + " p4.y = " + p4.y );
-//					Log.e(TAG,"intersectPoint = " + intersectPoint);
-//					if(intersectPoint != null){
-//						Log.e(TAG,"intersectPoint.x = " + intersectPoint.x + " intersectPoint.y = " + intersectPoint.y);
-//						arrIntersectPoint.add(intersectPoint);
-//					}
-//					
-//				}
-//			}
-//			
+		private void drawGraphCompareBGWithoutAnimation(GraphCanvasWrapper graphCanvas) {
 			Canvas c = new Canvas(b);
 			b.eraseColor(Color.TRANSPARENT);
 			
@@ -552,10 +501,10 @@ public class LineComapreGraphView extends SurfaceView implements Callback{
 			pBg.setFilterBitmap(true); // bitmap anti alias
 			pBg.setStyle(Style.FILL);
 			
-			GraphPath lineBgPath1 = new GraphPath(width, height, mLineGraphVO.getPaddingLeft(), mLineGraphVO.getPaddingBottom());
-			GraphPath lineBgPath2 = new GraphPath(width, height, mLineGraphVO.getPaddingLeft(), mLineGraphVO.getPaddingBottom());
+			ArrayList<GraphPath> arrLineBgPath = new ArrayList<GraphPath>();
 			
 			for (int i = 0; i < mLineGraphVO.getArrGraph().size(); i++) {
+				GraphPath lineBgPath = new GraphPath(width, height, mLineGraphVO.getPaddingLeft(), mLineGraphVO.getPaddingBottom());
 				boolean firstSet = false;
 				float x = 0;
 				float y = 0;
@@ -573,23 +522,14 @@ public class LineComapreGraphView extends SurfaceView implements Callback{
 							x = xGap * j ;
 							y = yLength * mLineGraphVO.getArrGraph().get(i).getCoordinateArr()[j]/mLineGraphVO.getMaxValue();
 							
-							if(i == 0){
-								lineBgPath1.moveTo(x, 0);
-								lineBgPath1.lineTo(x, y);
-							}else{
-								lineBgPath2.moveTo(x, 0);
-								lineBgPath2.lineTo(x, y);
-							}
+							lineBgPath.moveTo(x, 0);
+							lineBgPath.lineTo(x, y);
 							firstSet = true;
 						} else {
 							x = xGap * j;
 							y = yLength * mLineGraphVO.getArrGraph().get(i).getCoordinateArr()[j]/mLineGraphVO.getMaxValue();
 							
-							if(i == 0){
-								lineBgPath1.lineTo(x, y);
-							}else{
-								lineBgPath2.lineTo(x, y);
-							}
+							lineBgPath.lineTo(x, y);
 						}
 						
 						if(icon == null){
@@ -600,17 +540,11 @@ public class LineComapreGraphView extends SurfaceView implements Callback{
 					}
 				}
 				
-				if(i == 0){
-					lineBgPath1.lineTo(x, 0);
-					lineBgPath1.lineTo(0, 0);
-//					graphCanvas.getCanvas().drawPath(lineBgPath1, pBg);
-				}else{
-					lineBgPath2.lineTo(x, 0);
-					lineBgPath2.lineTo(0, 0);
+				lineBgPath.lineTo(x, 0);
+				lineBgPath.lineTo(0, 0);
+				arrLineBgPath.add(lineBgPath);
 					
 //					graphCanvas.getCanvas().drawPath(lineBgPath2, pBg);
-				}
-				
 				
 				anim += 0.01f;
 				if(anim >= mLineGraphVO.getArrGraph().get(i).getCoordinateArr().length-1){
@@ -618,15 +552,15 @@ public class LineComapreGraphView extends SurfaceView implements Callback{
 				}
 
 			}
-			
-				pBg.setColor(mLineGraphVO.getArrGraph().get(0).getColor());
-				pBg.setAlpha(255);
-				c.drawPath(lineBgPath1, pBg);
-				pBg.setXfermode(new PorterDuffXfermode(Mode.XOR));
-				pBg.setColor(mLineGraphVO.getArrGraph().get(1).getColor());
-				pBg.setAlpha(255);
-				c.drawPath(lineBgPath2, pBg);
-				graphCanvas.getCanvas().drawBitmap(b, 0, 0, null);
+
+			pBg.setColor(mLineGraphVO.getArrGraph().get(0).getColor());
+			pBg.setAlpha(255);
+			c.drawPath(arrLineBgPath.get(0), pBg);
+			pBg.setXfermode(new PorterDuffXfermode(Mode.XOR));
+			pBg.setColor(mLineGraphVO.getArrGraph().get(1).getColor());
+			pBg.setAlpha(255);
+			c.drawPath(arrLineBgPath.get(1), pBg);
+			graphCanvas.getCanvas().drawBitmap(b, 0, 0, null);
 		}
 
 		/**
@@ -705,6 +639,108 @@ public class LineComapreGraphView extends SurfaceView implements Callback{
 			
 //			Log.e(TAG,"curTime = " + curTime + " , animStartTime = " + animStartTime);
 //			Log.e(TAG,"anim = " + anim + " , gapTime = " + gapTime);
+		}
+		
+		/**
+		 *	draw graph with animation 
+		 */
+		private void drawGraphCompareBGWithAnimation(GraphCanvasWrapper graphCanvas) {
+			//for draw animation
+			float prev_x = 0;
+			float prev_y = 0;
+			
+			float next_x = 0;
+			float next_y = 0;
+			
+			float value = 0;
+			float mode = 0;
+			
+			Canvas c = new Canvas(b);
+			b.eraseColor(Color.TRANSPARENT);
+			
+			Paint pBg = new Paint();
+			pBg.setFlags(Paint.ANTI_ALIAS_FLAG);
+			pBg.setAntiAlias(true); //text anti alias
+			pBg.setFilterBitmap(true); // bitmap anti alias
+			pBg.setStyle(Style.FILL);
+			
+			ArrayList<GraphPath> arrLineBgPath = new ArrayList<GraphPath>();
+			
+			for (int i = 0; i < mLineGraphVO.getArrGraph().size(); i++) {
+				GraphPath lineBgPath = new GraphPath(width, height, mLineGraphVO.getPaddingLeft(), mLineGraphVO.getPaddingBottom());
+				
+				boolean firstSet = false;
+				float x = 0;
+				float y = 0;
+				p.setColor(mLineGraphVO.getArrGraph().get(i).getColor());
+				pCircle.setColor(mLineGraphVO.getArrGraph().get(i).getColor());
+				float xGap = xLength/(mLineGraphVO.getArrGraph().get(i).getCoordinateArr().length-1);
+				
+				Bitmap icon = arrIcon.get(i);
+				value = anim/1;
+				mode = anim %1;
+				
+				for (int j = 0; j < value+1; j++) {
+					if(j < mLineGraphVO.getArrGraph().get(i).getCoordinateArr().length){
+						
+						if (!firstSet) {
+							
+							x = xGap * j ;
+							y = yLength * mLineGraphVO.getArrGraph().get(i).getCoordinateArr()[j]/mLineGraphVO.getMaxValue();
+							
+							lineBgPath.moveTo(x, 0);
+							lineBgPath.lineTo(x, y);
+							
+							firstSet = true;
+						} else {
+							x = xGap * j;
+							y = yLength * mLineGraphVO.getArrGraph().get(i).getCoordinateArr()[j]/mLineGraphVO.getMaxValue();
+							
+							if( j > value ){
+								next_x = x - prev_x;
+								next_y = y - prev_y;
+								
+								lineBgPath.lineTo(prev_x + next_x * mode, prev_y + next_y * mode);
+							}else{
+								lineBgPath.lineTo(x, y);
+							}
+						}
+						
+						if(icon == null){
+							graphCanvas.drawCircle(x, y, 4, pCircle);
+						}else{
+							graphCanvas.drawBitmapIcon(icon, x, y, null);
+						}
+						prev_x = x;
+						prev_y = y;
+					}
+				}
+				lineBgPath.lineTo(x, 0);
+				lineBgPath.lineTo(0, 0);
+				
+				arrLineBgPath.add(lineBgPath);
+			}
+			
+			long curTime = System.currentTimeMillis();
+			long gapTime = curTime - animStartTime;
+			long animDuration = mLineGraphVO.getAnimation().getDuration();
+			if(gapTime >= animDuration){
+				gapTime = animDuration;
+				isDirty = false;
+			}
+			
+			
+			
+			anim = mLineGraphVO.getArrGraph().get(0).getCoordinateArr().length * (float)gapTime/(float)animDuration;
+			
+			pBg.setColor(mLineGraphVO.getArrGraph().get(0).getColor());
+			pBg.setAlpha(255);
+			c.drawPath(arrLineBgPath.get(0), pBg);
+			pBg.setXfermode(new PorterDuffXfermode(Mode.XOR));
+			pBg.setColor(mLineGraphVO.getArrGraph().get(1).getColor());
+			pBg.setAlpha(255);
+			c.drawPath(arrLineBgPath.get(1), pBg);
+			graphCanvas.getCanvas().drawBitmap(b, 0, 0, null);
 		}
 		
 		/**

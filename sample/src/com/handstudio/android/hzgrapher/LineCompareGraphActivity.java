@@ -94,7 +94,7 @@ public class LineCompareGraphActivity extends Activity {
 				marginTop, marginRight, maxValue, increment, legendArr, arrGraph);
 		
 		//set animation
-//		vo.setAnimation(new GraphAnimation(GraphAnimation.LINEAR_ANIMATION, GraphAnimation.DEFAULT_DURATION));
+		vo.setAnimation(new GraphAnimation(GraphAnimation.LINEAR_ANIMATION, GraphAnimation.DEFAULT_DURATION));
 		//set graph name box
 		vo.setGraphNameBox(new GraphNameBox());
 		

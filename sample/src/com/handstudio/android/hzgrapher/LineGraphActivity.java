@@ -31,10 +31,10 @@ public class LineGraphActivity extends Activity {
 
 	private void setLineGraph() {
 		//all setting
-		LineGraphVO vo = makeLineGraphAllSetting();
+//		LineGraphVO vo = makeLineGraphAllSetting();
 		
 		//default setting
-//		LineGraphVO vo = makeLineGraphDefaultSetting();
+		LineGraphVO vo = makeLineGraphDefaultSetting();
 		
 		layoutGraphView.addView(new LineGraphView(this, vo));
 	}
