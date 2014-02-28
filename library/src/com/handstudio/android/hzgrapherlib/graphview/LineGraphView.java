@@ -145,6 +145,7 @@ public class LineGraphView extends SurfaceView implements Callback{
 		//animation
 		float anim = 0.0f;
 		boolean isAnimation = false;
+		boolean isDrawRegion = false;
 		long animStartTime = -1;
 		
 		WeakHashMap<Integer, Bitmap> arrIcon = new WeakHashMap<Integer, Bitmap>();
@@ -185,6 +186,7 @@ public class LineGraphView extends SurfaceView implements Callback{
 			
 			setPaint();
 			isAnimation();
+			isDrawRegion();
 			
 			animStartTime = System.currentTimeMillis();
 			
@@ -230,8 +232,10 @@ public class LineGraphView extends SurfaceView implements Callback{
 							drawXText(graphCanvasWrapper);
 							drawYText(graphCanvasWrapper);
 							
-							//TODO chart
+							//Graph
+							drawGraphRegion(graphCanvasWrapper);
 							drawGraph(graphCanvasWrapper);
+							
 							
 							drawGraphName(canvas);
 							
@@ -255,7 +259,23 @@ public class LineGraphView extends SurfaceView implements Callback{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				
+				long curTime = System.currentTimeMillis();
+				long gapTime = curTime - animStartTime;
+				long animDuration = mLineGraphVO.getAnimation().getDuration();
+				if(gapTime >= animDuration){
+					gapTime = animDuration;
+					isDirty = false;
+				}
+				
+				anim = mLineGraphVO.getArrGraph().get(0).getCoordinateArr().length * (float)gapTime/(float)animDuration;
+				
+//				Log.e(TAG,"curTime = " + curTime + " , animStartTime = " + animStartTime);
+//				Log.e(TAG,"anim = " + anim + " , gapTime = " + gapTime);
+
 			}
+			
+			
 		}
 
 		private void drawGraphName(Canvas canvas) {
@@ -354,6 +374,17 @@ public class LineGraphView extends SurfaceView implements Callback{
 				isAnimation = false;
 			}
 		}
+		
+		/**
+		 * check graph line animation
+		 */
+		private void isDrawRegion() {
+			if(mLineGraphVO.isDrawRegion()){
+				isDrawRegion = true;
+			}else{
+				isDrawRegion = false;
+			}
+		}
 
 		private void drawBaseLine(GraphCanvasWrapper graphCanvas) {
 			for (int i = 1; mLineGraphVO.getIncrement() * i <= mLineGraphVO.getMaxValue(); i++) {
@@ -412,6 +443,19 @@ public class LineGraphView extends SurfaceView implements Callback{
 			pMarkText.setColor(Color.BLACK); 
 		}
 
+		
+		/**
+		 * draw Graph Region
+		 */
+		private void drawGraphRegion(GraphCanvasWrapper graphCanvas) {
+			
+			if (isDrawRegion){
+				drawGraphRegionWithAnimation(graphCanvas);
+			}else{
+				drawGraphRegionWithoutAnimation(graphCanvas);
+			}
+		}
+		
 		/**
 		 * draw Graph
 		 */
@@ -424,15 +468,15 @@ public class LineGraphView extends SurfaceView implements Callback{
 			}
 		}
 		
+		
 		/**
 		 *	draw graph without animation 
 		 */
-		private void drawGraphWithoutAnimation(GraphCanvasWrapper graphCanvas) {
+		private void drawGraphRegionWithoutAnimation(GraphCanvasWrapper graphCanvas) {
 			
 			boolean isDrawRegion = mLineGraphVO.isDrawRegion();
 			
 			for (int i = 0; i < mLineGraphVO.getArrGraph().size(); i++) {
-				GraphPath linePath = new GraphPath(width, height, mLineGraphVO.getPaddingLeft(), mLineGraphVO.getPaddingBottom());
 				GraphPath regionPath = new GraphPath(width, height, mLineGraphVO.getPaddingLeft(), mLineGraphVO.getPaddingBottom());
 				boolean firstSet = false;
 				float x = 0;
@@ -451,22 +495,15 @@ public class LineGraphView extends SurfaceView implements Callback{
 							x = xGap * j ;
 							y = yLength * mLineGraphVO.getArrGraph().get(i).getCoordinateArr()[j]/mLineGraphVO.getMaxValue();
 							
-							linePath.moveTo(x, y);
-							
-							if(isDrawRegion){
-								regionPath.moveTo(x, 0);
-								regionPath.lineTo(x, y);
-							}
+							regionPath.moveTo(x, 0);
+							regionPath.lineTo(x, y);
 							
 							firstSet = true;
 						} else {
 							x = xGap * j;
 							y = yLength * mLineGraphVO.getArrGraph().get(i).getCoordinateArr()[j]/mLineGraphVO.getMaxValue();
 							
-							linePath.lineTo(x, y);
-							if(isDrawRegion){
-								regionPath.lineTo(x, y);
-							}
+							regionPath.lineTo(x, y);
 						}
 						
 						if(icon == null){
@@ -477,11 +514,6 @@ public class LineGraphView extends SurfaceView implements Callback{
 					}
 				}
 				
-				anim += 0.01f;
-				if(anim >= mLineGraphVO.getArrGraph().get(i).getCoordinateArr().length-1){
-					anim = mLineGraphVO.getArrGraph().get(i).getCoordinateArr().length;
-				}
-
 				if(isDrawRegion){
 					regionPath.lineTo(x, 0);
 					regionPath.lineTo(0, 0);
@@ -494,14 +526,13 @@ public class LineGraphView extends SurfaceView implements Callback{
 					pBg.setColor(mLineGraphVO.getArrGraph().get(i).getColor());
 					graphCanvas.getCanvas().drawPath(regionPath, pBg);
 				}
-				graphCanvas.getCanvas().drawPath(linePath, p);
 			}
 		}
 
 		/**
 		 *	draw graph with animation 
 		 */
-		private void drawGraphWithAnimation(GraphCanvasWrapper graphCanvas) {
+		private void drawGraphRegionWithAnimation(GraphCanvasWrapper graphCanvas) {
 			//for draw animation
 			float prev_x = 0;
 			float prev_y = 0;
@@ -515,7 +546,6 @@ public class LineGraphView extends SurfaceView implements Callback{
 			boolean isDrawRegion = mLineGraphVO.isDrawRegion();
 			
 			for (int i = 0; i < mLineGraphVO.getArrGraph().size(); i++) {
-				GraphPath linePath = new GraphPath(width, height, mLineGraphVO.getPaddingLeft(), mLineGraphVO.getPaddingBottom());
 				GraphPath regionPath = new GraphPath(width, height, mLineGraphVO.getPaddingLeft(), mLineGraphVO.getPaddingBottom());
 				boolean firstSet = false;
 				float x = 0;
@@ -536,12 +566,8 @@ public class LineGraphView extends SurfaceView implements Callback{
 							x = xGap * j ;
 							y = yLength * mLineGraphVO.getArrGraph().get(i).getCoordinateArr()[j]/mLineGraphVO.getMaxValue();
 							
-							linePath.moveTo(x, y);
-							
-							if(isDrawRegion){
-								regionPath.moveTo(x, 0);
-								regionPath.lineTo(x, y);
-							}
+							regionPath.moveTo(x, 0);
+							regionPath.lineTo(x, y);
 							
 							firstSet = true;
 						} else {
@@ -552,15 +578,9 @@ public class LineGraphView extends SurfaceView implements Callback{
 								next_x = x - prev_x;
 								next_y = y - prev_y;
 								
-								linePath.lineTo(prev_x + next_x * mode, prev_y + next_y * mode);
-								if(isDrawRegion){
-									regionPath.lineTo(prev_x + next_x * mode, prev_y + next_y * mode);
-								}
+								regionPath.lineTo(prev_x + next_x * mode, prev_y + next_y * mode);
 							}else{
-								linePath.lineTo(x, y);
-								if(isDrawRegion){
-									regionPath.lineTo(x, y);
-								}
+								regionPath.lineTo(x, y);
 							}
 						}
 						
@@ -586,20 +606,121 @@ public class LineGraphView extends SurfaceView implements Callback{
 					pBg.setColor(mLineGraphVO.getArrGraph().get(i).getColor());
 					graphCanvas.getCanvas().drawPath(regionPath, pBg);
 				}
+			}
+		}
+		
+		/**
+		 *	draw graph without animation 
+		 */
+		private void drawGraphWithoutAnimation(GraphCanvasWrapper graphCanvas) {
+			
+			for (int i = 0; i < mLineGraphVO.getArrGraph().size(); i++) {
+				GraphPath linePath = new GraphPath(width, height, mLineGraphVO.getPaddingLeft(), mLineGraphVO.getPaddingBottom());
+				GraphPath regionPath = new GraphPath(width, height, mLineGraphVO.getPaddingLeft(), mLineGraphVO.getPaddingBottom());
+				boolean firstSet = false;
+				float x = 0;
+				float y = 0;
+				p.setColor(mLineGraphVO.getArrGraph().get(i).getColor());
+				pCircle.setColor(mLineGraphVO.getArrGraph().get(i).getColor());
+				float xGap = xLength/(mLineGraphVO.getArrGraph().get(i).getCoordinateArr().length-1);
+				
+				Bitmap icon = arrIcon.get(i);
+				
+				for (int j = 0; j < mLineGraphVO.getArrGraph().get(i).getCoordinateArr().length; j++) {
+					if(j < mLineGraphVO.getArrGraph().get(i).getCoordinateArr().length){
+						
+						if (!firstSet) {
+							
+							x = xGap * j ;
+							y = yLength * mLineGraphVO.getArrGraph().get(i).getCoordinateArr()[j]/mLineGraphVO.getMaxValue();
+							
+							linePath.moveTo(x, y);
+							
+							firstSet = true;
+						} else {
+							x = xGap * j;
+							y = yLength * mLineGraphVO.getArrGraph().get(i).getCoordinateArr()[j]/mLineGraphVO.getMaxValue();
+							
+							linePath.lineTo(x, y);
+						}
+						
+						if(icon == null){
+							graphCanvas.drawCircle(x, y, 4, pCircle);
+						}else{
+							graphCanvas.drawBitmapIcon(icon, x, y, null);
+						}
+					}
+				}
+				
 				graphCanvas.getCanvas().drawPath(linePath, p);
 			}
-			long curTime = System.currentTimeMillis();
-			long gapTime = curTime - animStartTime;
-			long animDuration = mLineGraphVO.getAnimation().getDuration();
-			if(gapTime >= animDuration){
-				gapTime = animDuration;
-				isDirty = false;
+		}
+
+		/**
+		 *	draw graph with animation 
+		 */
+		private void drawGraphWithAnimation(GraphCanvasWrapper graphCanvas) {
+			//for draw animation
+			float prev_x = 0;
+			float prev_y = 0;
+			
+			float next_x = 0;
+			float next_y = 0;
+			
+			float value = 0;
+			float mode = 0;
+			
+			for (int i = 0; i < mLineGraphVO.getArrGraph().size(); i++) {
+				GraphPath linePath = new GraphPath(width, height, mLineGraphVO.getPaddingLeft(), mLineGraphVO.getPaddingBottom());
+				GraphPath regionPath = new GraphPath(width, height, mLineGraphVO.getPaddingLeft(), mLineGraphVO.getPaddingBottom());
+				boolean firstSet = false;
+				float x = 0;
+				float y = 0;
+				p.setColor(mLineGraphVO.getArrGraph().get(i).getColor());
+				pCircle.setColor(mLineGraphVO.getArrGraph().get(i).getColor());
+				float xGap = xLength/(mLineGraphVO.getArrGraph().get(i).getCoordinateArr().length-1);
+				
+				Bitmap icon = arrIcon.get(i);
+				value = anim/1;
+				mode = anim %1;
+				
+				for (int j = 0; j < value+1; j++) {
+					if(j < mLineGraphVO.getArrGraph().get(i).getCoordinateArr().length){
+						
+						if (!firstSet) {
+							
+							x = xGap * j ;
+							y = yLength * mLineGraphVO.getArrGraph().get(i).getCoordinateArr()[j]/mLineGraphVO.getMaxValue();
+							
+							linePath.moveTo(x, y);
+							
+							firstSet = true;
+						} else {
+							x = xGap * j;
+							y = yLength * mLineGraphVO.getArrGraph().get(i).getCoordinateArr()[j]/mLineGraphVO.getMaxValue();
+							
+							if( j > value ){
+								next_x = x - prev_x;
+								next_y = y - prev_y;
+								
+								linePath.lineTo(prev_x + next_x * mode, prev_y + next_y * mode);
+							}else{
+								linePath.lineTo(x, y);
+							}
+						}
+						
+						if(icon == null){
+							graphCanvas.drawCircle(x, y, 4, pCircle);
+						}else{
+							graphCanvas.drawBitmapIcon(icon, x, y, null);
+						}
+						prev_x = x;
+						prev_y = y;
+					}
+				}
+				
+				graphCanvas.getCanvas().drawPath(linePath, p);
 			}
-			
-			anim = mLineGraphVO.getArrGraph().get(0).getCoordinateArr().length * (float)gapTime/(float)animDuration;
-			
-//			Log.e(TAG,"curTime = " + curTime + " , animStartTime = " + animStartTime);
-//			Log.e(TAG,"anim = " + anim + " , gapTime = " + gapTime);
 		}
 		
 		/**
