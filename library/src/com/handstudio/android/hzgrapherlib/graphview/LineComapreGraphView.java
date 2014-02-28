@@ -695,7 +695,11 @@ public class LineComapreGraphView extends SurfaceView implements Callback{
 						prev_y = y;
 					}
 				}
-				lineBgPath.lineTo(prev_x + next_x * mode, 0);
+				float x_bg = prev_x + next_x * mode;
+				if(x_bg >= xLength){
+					x_bg = xLength;
+				}
+				lineBgPath.lineTo(x_bg, 0);
 				lineBgPath.lineTo(0, 0);
 				
 				arrLineBgPath.add(lineBgPath);

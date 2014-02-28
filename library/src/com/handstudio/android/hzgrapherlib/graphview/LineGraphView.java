@@ -586,7 +586,11 @@ public class LineGraphView extends SurfaceView implements Callback{
 				isFinish = true;
 				
 				if(isDrawRegion){
-					regionPath.lineTo(prev_x + next_x * mode, 0);
+					float x_bg = prev_x + next_x * mode;
+					if(x_bg >= xLength){
+						x_bg = xLength;
+					}
+					regionPath.lineTo(x_bg, 0);
 					regionPath.lineTo(0, 0);
 					
 					Paint pBg = new Paint();
