@@ -450,11 +450,12 @@ public class LineGraphView extends SurfaceView implements Callback{
 		 * draw Graph Region
 		 */
 		private void drawGraphRegion(GraphCanvasWrapper graphCanvas) {
-			
-			if (isDrawRegion){
-				drawGraphRegionWithAnimation(graphCanvas);
-			}else{
-				drawGraphRegionWithoutAnimation(graphCanvas);
+			if(isDrawRegion){
+				if (isAnimation){
+					drawGraphRegionWithAnimation(graphCanvas);
+				}else{
+					drawGraphRegionWithoutAnimation(graphCanvas);
+				}
 			}
 		}
 		
@@ -487,8 +488,6 @@ public class LineGraphView extends SurfaceView implements Callback{
 				pCircle.setColor(mLineGraphVO.getArrGraph().get(i).getColor());
 				float xGap = xLength/(mLineGraphVO.getArrGraph().get(i).getCoordinateArr().length-1);
 				
-				Bitmap icon = arrIcon.get(i);
-				
 				for (int j = 0; j < mLineGraphVO.getArrGraph().get(i).getCoordinateArr().length; j++) {
 					if(j < mLineGraphVO.getArrGraph().get(i).getCoordinateArr().length){
 						
@@ -506,12 +505,6 @@ public class LineGraphView extends SurfaceView implements Callback{
 							y = yLength * mLineGraphVO.getArrGraph().get(i).getCoordinateArr()[j]/mLineGraphVO.getMaxValue();
 							
 							regionPath.lineTo(x, y);
-						}
-						
-						if(icon == null){
-							graphCanvas.drawCircle(x, y, 4, pCircle);
-						}else{
-							graphCanvas.drawBitmapIcon(icon, x, y, null);
 						}
 					}
 				}
@@ -556,7 +549,6 @@ public class LineGraphView extends SurfaceView implements Callback{
 				pCircle.setColor(mLineGraphVO.getArrGraph().get(i).getColor());
 				float xGap = xLength/(mLineGraphVO.getArrGraph().get(i).getCoordinateArr().length-1);
 				
-				Bitmap icon = arrIcon.get(i);
 				value = anim/1;
 				mode = anim %1;
 				
@@ -586,11 +578,6 @@ public class LineGraphView extends SurfaceView implements Callback{
 							}
 						}
 						
-						if(icon == null){
-							graphCanvas.drawCircle(x, y, 4, pCircle);
-						}else{
-							graphCanvas.drawBitmapIcon(icon, x, y, null);
-						}
 						prev_x = x;
 						prev_y = y;
 					}

@@ -150,7 +150,6 @@ public class LineComapreGraphView extends SurfaceView implements Callback{
 		//animation
 		float anim = 0.0f;
 		boolean isAnimation = false;
-		boolean isDrawRegion = false;
 		long animStartTime = -1;
 		
 		WeakHashMap<Integer, Bitmap> arrIcon = new WeakHashMap<Integer, Bitmap>();
@@ -191,7 +190,6 @@ public class LineComapreGraphView extends SurfaceView implements Callback{
 			
 			setPaint();
 			isAnimation();
-			isDrawRegion();
 			
 			animStartTime = System.currentTimeMillis();
 			
@@ -379,17 +377,6 @@ public class LineComapreGraphView extends SurfaceView implements Callback{
 			}
 		}
 		
-		/**
-		 * check graph line region animation
-		 */
-		private void isDrawRegion() {
-			if(mLineGraphVO.isDrawRegion()){
-				isDrawRegion = true;
-			}else{
-				isDrawRegion = false;
-			}
-		}
-
 		private void drawBaseLine(GraphCanvasWrapper graphCanvas) {
 			for (int i = 1; mLineGraphVO.getIncrement() * i <= mLineGraphVO.getMaxValue(); i++) {
 				
@@ -452,7 +439,7 @@ public class LineComapreGraphView extends SurfaceView implements Callback{
 		 */
 		private void drawGraphRegion(GraphCanvasWrapper graphCanvas) {
 			
-			if (isDrawRegion){
+			if (isAnimation){
 				drawGraphCompareRegionWithAnimation(graphCanvas);
 			}else{
 				drawGraphCompareRegionWithoutAnimation(graphCanvas);
@@ -547,8 +534,6 @@ public class LineComapreGraphView extends SurfaceView implements Callback{
 				pCircle.setColor(mLineGraphVO.getArrGraph().get(i).getColor());
 				float xGap = xLength/(mLineGraphVO.getArrGraph().get(i).getCoordinateArr().length-1);
 				
-				Bitmap icon = arrIcon.get(i);
-				
 				for (int j = 0; j < mLineGraphVO.getArrGraph().get(i).getCoordinateArr().length; j++) {
 					if(j < mLineGraphVO.getArrGraph().get(i).getCoordinateArr().length){
 						
@@ -565,12 +550,6 @@ public class LineComapreGraphView extends SurfaceView implements Callback{
 							y = yLength * mLineGraphVO.getArrGraph().get(i).getCoordinateArr()[j]/mLineGraphVO.getMaxValue();
 							
 							lineBgPath.lineTo(x, y);
-						}
-						
-						if(icon == null){
-							graphCanvas.drawCircle(x, y, 4, pCircle);
-						}else{
-							graphCanvas.drawBitmapIcon(icon, x, y, null);
 						}
 					}
 				}
@@ -694,7 +673,6 @@ public class LineComapreGraphView extends SurfaceView implements Callback{
 				pCircle.setColor(mLineGraphVO.getArrGraph().get(i).getColor());
 				float xGap = xLength/(mLineGraphVO.getArrGraph().get(i).getCoordinateArr().length-1);
 				
-				Bitmap icon = arrIcon.get(i);
 				value = anim/1;
 				mode = anim %1;
 				
@@ -724,11 +702,6 @@ public class LineComapreGraphView extends SurfaceView implements Callback{
 							}
 						}
 						
-						if(icon == null){
-							graphCanvas.drawCircle(x, y, 4, pCircle);
-						}else{
-							graphCanvas.drawBitmapIcon(icon, x, y, null);
-						}
 						prev_x = x;
 						prev_y = y;
 					}
@@ -737,14 +710,6 @@ public class LineComapreGraphView extends SurfaceView implements Callback{
 				lineBgPath.lineTo(0, 0);
 				
 				arrLineBgPath.add(lineBgPath);
-			}
-			
-			long curTime = System.currentTimeMillis();
-			long gapTime = curTime - animStartTime;
-			long animDuration = mLineGraphVO.getAnimation().getDuration();
-			if(gapTime >= animDuration){
-				gapTime = animDuration;
-				isDirty = false;
 			}
 			
 			pBg.setColor(mLineGraphVO.getArrGraph().get(0).getColor());
