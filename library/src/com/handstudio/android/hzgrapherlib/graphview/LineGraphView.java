@@ -215,7 +215,7 @@ public class LineGraphView extends SurfaceView implements Callback{
 								canvas.drawBitmap(bg, 0, 0, null);
 							}
 
-							//TODO x coord dot line
+							//x coord dot line
 							drawBaseLine(graphCanvasWrapper);
 							
 							//y coord
@@ -224,11 +224,11 @@ public class LineGraphView extends SurfaceView implements Callback{
 							//x coord
 							graphCanvasWrapper.drawLine(0, 0, chartXLength, 0, pBaseLine);
 							
-							//TODO x, y coord mark
+							//x, y coord mark
 							drawXMark(graphCanvasWrapper);
 							drawYMark(graphCanvasWrapper);
 							
-							//TODO x, y coord text
+							//x, y coord text
 							drawXText(graphCanvasWrapper);
 							drawYText(graphCanvasWrapper);
 							
@@ -259,23 +259,25 @@ public class LineGraphView extends SurfaceView implements Callback{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
-				long curTime = System.currentTimeMillis();
-				long gapTime = curTime - animStartTime;
-				long animDuration = mLineGraphVO.getAnimation().getDuration();
-				if(gapTime >= animDuration){
-					gapTime = animDuration;
-					isDirty = false;
-				}
-				
-				anim = mLineGraphVO.getArrGraph().get(0).getCoordinateArr().length * (float)gapTime/(float)animDuration;
-				
-//				Log.e(TAG,"curTime = " + curTime + " , animStartTime = " + animStartTime);
-//				Log.e(TAG,"anim = " + anim + " , gapTime = " + gapTime);
-
+				calcTimePass();
 			}
 			
 			
+		}
+		
+		private void calcTimePass(){
+			long curTime = System.currentTimeMillis();
+			long gapTime = curTime - animStartTime;
+			long animDuration = mLineGraphVO.getAnimation().getDuration();
+			if(gapTime >= animDuration){
+				gapTime = animDuration;
+				isDirty = false;
+			}
+			
+			anim = mLineGraphVO.getArrGraph().get(0).getCoordinateArr().length * (float)gapTime/(float)animDuration;
+			
+//			Log.e(TAG,"curTime = " + curTime + " , animStartTime = " + animStartTime);
+//			Log.e(TAG,"anim = " + anim + " , gapTime = " + gapTime);
 		}
 
 		private void drawGraphName(Canvas canvas) {
@@ -376,7 +378,7 @@ public class LineGraphView extends SurfaceView implements Callback{
 		}
 		
 		/**
-		 * check graph line animation
+		 * check graph line region animation
 		 */
 		private void isDrawRegion() {
 			if(mLineGraphVO.isDrawRegion()){
