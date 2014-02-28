@@ -22,6 +22,13 @@
 			android:onClick="onClick"/>
 		
 		<Button 
+		    android:id="@+id/btnLineGraphWithRegion"
+		    android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/text_line_graph_with_region"
+			android:onClick="onClick"/>
+		
+		<Button 
 		    android:id="@+id/btnCompareGraph"
 		    android:layout_width="match_parent"
 			android:layout_height="wrap_content"

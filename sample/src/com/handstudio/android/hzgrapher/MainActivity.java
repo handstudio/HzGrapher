@@ -20,6 +20,10 @@ public class MainActivity extends Activity {
 			startActivity(LineGraphActivity.class);
 			break;
 			
+		case R.id.btnLineGraphWithRegion:
+			startActivity(LineGraphWithRegionActivity.class);
+			break;
+			
 		case R.id.btnCompareGraph:
 			startActivity(LineCompareGraphActivity.class);
 			break;
