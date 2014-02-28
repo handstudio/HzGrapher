@@ -6,6 +6,8 @@ android hz graph library
 Function
 --------
 + Line Graph
++ Line Graph with Region
++ Line Compare Graph
 
 Feature
 -------
