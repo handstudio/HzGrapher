@@ -464,7 +464,6 @@ public class LineComapreGraphView extends SurfaceView implements Callback{
 		private void drawGraphWithoutAnimation(GraphCanvasWrapper graphCanvas) {
 			for (int i = 0; i < mLineGraphVO.getArrGraph().size(); i++) {
 				GraphPath linePath = new GraphPath(width, height, mLineGraphVO.getPaddingLeft(), mLineGraphVO.getPaddingBottom());
-				GraphPath erasePath = new GraphPath(width, height, mLineGraphVO.getPaddingLeft(), mLineGraphVO.getPaddingBottom());
 				boolean firstSet = false;
 				float x = 0;
 				float y = 0;
@@ -484,15 +483,12 @@ public class LineComapreGraphView extends SurfaceView implements Callback{
 							
 							linePath.moveTo(x, y);
 							
-//					        erasePath.moveTo(x, 0);
-//					        erasePath.lineTo(x, y);
 							firstSet = true;
 						} else {
 							x = xGap * j;
 							y = yLength * mLineGraphVO.getArrGraph().get(i).getCoordinateArr()[j]/mLineGraphVO.getMaxValue();
 							
 							linePath.lineTo(x, y);
-//					        erasePath.lineTo(x, y);
 							
 						}
 						
@@ -502,11 +498,6 @@ public class LineComapreGraphView extends SurfaceView implements Callback{
 							graphCanvas.drawBitmapIcon(icon, x, y, null);
 						}
 					}
-//				    erasePath.lineTo(getWidth(), y);
-//					erasePath.lineTo(x, 0);
-//					erasePath.lineTo(0, 0);
-					
-//					canvas.drawPath(erasePath, pLine);
 				}
 				
 				graphCanvas.getCanvas().drawPath(linePath, p);
@@ -558,8 +549,6 @@ public class LineComapreGraphView extends SurfaceView implements Callback{
 				lineBgPath.lineTo(0, 0);
 				arrLineBgPath.add(lineBgPath);
 					
-//					graphCanvas.getCanvas().drawPath(lineBgPath2, pBg);
-				
 			}
 
 			pBg.setColor(mLineGraphVO.getArrGraph().get(0).getColor());
@@ -706,7 +695,7 @@ public class LineComapreGraphView extends SurfaceView implements Callback{
 						prev_y = y;
 					}
 				}
-				lineBgPath.lineTo(x, 0);
+				lineBgPath.lineTo(prev_x + next_x * mode, 0);
 				lineBgPath.lineTo(0, 0);
 				
 				arrLineBgPath.add(lineBgPath);

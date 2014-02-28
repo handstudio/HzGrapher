@@ -552,6 +552,7 @@ public class LineGraphView extends SurfaceView implements Callback{
 				value = anim/1;
 				mode = anim %1;
 				
+				boolean isFinish = false;
 				for (int j = 0; j < value+1; j++) {
 					if(j < mLineGraphVO.getArrGraph().get(i).getCoordinateArr().length){
 						
@@ -582,9 +583,10 @@ public class LineGraphView extends SurfaceView implements Callback{
 						prev_y = y;
 					}
 				}
+				isFinish = true;
 				
 				if(isDrawRegion){
-					regionPath.lineTo(x, 0);
+					regionPath.lineTo(prev_x + next_x * mode, 0);
 					regionPath.lineTo(0, 0);
 					
 					Paint pBg = new Paint();
