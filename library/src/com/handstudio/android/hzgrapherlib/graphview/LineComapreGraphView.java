@@ -32,7 +32,7 @@ import com.handstudio.android.hzgrapherlib.vo.linegraph.LineGraphVO;
 
 public class LineComapreGraphView extends SurfaceView implements Callback{
 
-	public static final String TAG = "LineGraphView";
+	public static final String TAG = "LineComapreGraphView";
 	private SurfaceHolder mHolder;
 	private DrawThread mDrawThread;
 	
@@ -266,15 +266,19 @@ public class LineComapreGraphView extends SurfaceView implements Callback{
 		}
 		
 		private void calcTimePass(){
-			long curTime = System.currentTimeMillis();
-			long gapTime = curTime - animStartTime;
-			long animDuration = mLineGraphVO.getAnimation().getDuration();
-			if(gapTime >= animDuration){
-				gapTime = animDuration;
+			if(isAnimation){
+				long curTime = System.currentTimeMillis();
+				long gapTime = curTime - animStartTime;
+				long animDuration = mLineGraphVO.getAnimation().getDuration();
+				if(gapTime >= animDuration){
+					gapTime = animDuration;
+					isDirty = false;
+				}
+				
+				anim = mLineGraphVO.getArrGraph().get(0).getCoordinateArr().length * (float)gapTime/(float)animDuration;
+			}else{
 				isDirty = false;
 			}
-			
-			anim = mLineGraphVO.getArrGraph().get(0).getCoordinateArr().length * (float)gapTime/(float)animDuration;
 			
 //			Log.e(TAG,"curTime = " + curTime + " , animStartTime = " + animStartTime);
 //			Log.e(TAG,"anim = " + anim + " , gapTime = " + gapTime);
