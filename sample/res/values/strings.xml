@@ -5,5 +5,6 @@
     <string name="text_line_graph">LineGraph</string>
     <string name="text_line_graph_with_region">LineGraph with Region</string>
     <string name="text_line_compare_graph">LineCompareGraph</string>
+    <string name="text_radar_graph">RadarGraph</string>
     
 </resources>
