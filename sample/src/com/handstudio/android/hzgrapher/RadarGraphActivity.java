@@ -81,7 +81,7 @@ public class RadarGraphActivity extends Activity {
 		int increment 		= RadarGraphVO.DEFAULT_INCREMENT;
 		
 		//GRAPH SETTING
-		String[] legendArr 	= {"1 best","2 worst","3 long long long ","4","5 asdgasdgasdga", "sdg"};
+		String[] legendArr 	= {"Android","Java","C++","Python","Objective c", "Spring Framework"};
 		float[] graph1 		= {100,90,80,70,90, 70};
 		float[] graph2 		= {70,50,80,40,90, 88};
 		float[] graph3 		= {20,70,90,90,90, 17};

@@ -244,7 +244,7 @@ public class RadarGraphView extends SurfaceView implements Callback{
 //							//TODO draw outline
 							
 							//TODO draw text
-							drawXText(canvas);
+							drawLegendText(canvas);
 							
 							//Graph
 							drawGraphRegion(canvas);
@@ -694,21 +694,29 @@ public class RadarGraphView extends SurfaceView implements Callback{
 //		}
 		
 		/**
-		 * draw Y Text
+		 * draw Legend Text
 		 */
-		private void drawXText(Canvas canvas) {
-//			for (int i = 0; mRadarGraphVO.getIncrement() * i <= mRadarGraphVO.getMaxValue(); i++) {
-//				
-//				String mark = Float.toString(mRadarGraphVO.getIncrement() * i);
-//				float y = yLength * mRadarGraphVO.getIncrement() * i/mRadarGraphVO.getMaxValue();
-//				pMarkText.measureText(mark);
-//				pMarkText.setTextSize(20);
-//				Rect rect = new Rect();
-//				pMarkText.getTextBounds(mark, 0, mark.length(), rect);
-////				Log.e(TAG, "rect = height()" + rect.height());
-////				Log.e(TAG, "rect = width()" + rect.width());
-//				graphCanvas.drawText(mark, -(rect.width() + 20), y-rect.height()/2, pMarkText);
-//			}
+		private void drawLegendText(Canvas canvas) {
+
+			for (int j = 0; j < fieldCount; j++) {
+
+				PointF textPoint = new PointF(chartCenter.x + 00, chartCenter.y - chartSize);
+				float radAngle = (float) (Converter.DegreeToRadian(360/fieldCount * (j))); // use radian
+				PointF rotateDot = getRotatePoint(textPoint, radAngle);
+
+				String legend = mRadarGraphVO.getLegendArr()[j];
+				pMarkText.measureText(legend);
+				pMarkText.setTextSize(20);
+				Rect rect = new Rect();
+				pMarkText.getTextBounds(legend, 0, legend.length(), rect);
+
+				if(radAngle >= Converter.DegreeToRadian(180)){
+					canvas.drawText(legend, rotateDot.x -(rect.width() + 20), rotateDot.y + rect.height(), pMarkText);
+				}else{
+					canvas.drawText(legend, rotateDot.x + (20), rotateDot.y - rect.height()/2, pMarkText);
+				}
+			}
+
 		}
 	}
 }
