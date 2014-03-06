@@ -141,7 +141,7 @@ public class RadarGraphView extends SurfaceView implements Callback{
 		int chartXLength = width - (mRadarGraphVO.getPaddingLeft() + mRadarGraphVO.getPaddingRight());
 		int chartYLength = height - (mRadarGraphVO.getPaddingBottom() + mRadarGraphVO.getPaddingTop());
 		
-		int chartSize = 0;
+		float chartSize = 0;
 		
 		//chartCenter
 		PointF chartCenter = new PointF(width/2, height/2);
