@@ -8,14 +8,12 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
-import android.graphics.LinearGradient;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.graphics.Shader;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -23,11 +21,9 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 
-import com.handstudio.android.hzgrapherlib.canvas.GraphCanvasWrapper;
-import com.handstudio.android.hzgrapherlib.path.GraphPath;
 import com.handstudio.android.hzgrapherlib.util.Converter;
 import com.handstudio.android.hzgrapherlib.vo.GraphNameBox;
-import com.handstudio.android.hzgrapherlib.vo.linegraph.LineGraphVO;
+import com.handstudio.android.hzgrapherlib.vo.radargraph.RadarGraphVO;
 
 public class RadarGraphView extends SurfaceView implements Callback{
 
@@ -35,14 +31,15 @@ public class RadarGraphView extends SurfaceView implements Callback{
 	private SurfaceHolder mHolder;
 	private DrawThread mDrawThread;
 	
-	private LineGraphVO mRadarGraphVO = null;
+	private RadarGraphVO mRadarGraphVO = null;
 	
+	public static final float MAX_VALUE = 100;
 	private int fieldCount = 8;
-	private int chartSize = 300;
+	private int baselineCount = 5;
 	
 	
 	//Constructor
-	public RadarGraphView(Context context, LineGraphVO vo) {
+	public RadarGraphView(Context context, RadarGraphVO vo) {
 		super(context);
 		mRadarGraphVO = vo;
 		initView(context, vo);
@@ -58,9 +55,12 @@ public class RadarGraphView extends SurfaceView implements Callback{
 		initView(context, attrs, defStyle);
 	}
 	
-	private void initView(Context context, LineGraphVO vo) {
+	private void initView(Context context, RadarGraphVO vo) {
 		mHolder = getHolder();
 		mHolder.addCallback(this);
+		
+		fieldCount = vo.getArrGraph().get(0).getCoordinateArr().length;
+		baselineCount = vo.getMaxValue() / vo.getIncrement();
 	}
 	
 
@@ -141,10 +141,13 @@ public class RadarGraphView extends SurfaceView implements Callback{
 		int chartXLength = width - (mRadarGraphVO.getPaddingLeft() + mRadarGraphVO.getPaddingRight());
 		int chartYLength = height - (mRadarGraphVO.getPaddingBottom() + mRadarGraphVO.getPaddingTop());
 		
+		int chartSize = 0;
+		
 		//chartCenter
 		PointF chartCenter = new PointF(width/2, height/2);
 		
-		Paint p = new Paint();
+		Paint pGraphColor = new Paint();
+		Paint pGraphRegionColor = new Paint();
 		Paint pCircle = new Paint();
 		Paint pCrossLine = new Paint();
 		Paint pBaseLine = new Paint();
@@ -179,6 +182,16 @@ public class RadarGraphView extends SurfaceView implements Callback{
 				bg = Bitmap.createScaledBitmap(tempBg, width, height, true);
 				tempBg.recycle();
 			}
+			
+			getChartSize();
+		}
+
+		private void getChartSize() {
+			if(chartXLength <= chartYLength){
+				chartSize = chartXLength/2; 
+			}else{
+				chartSize = chartYLength/2;
+			}
 		}
 		
 		public void setRunFlag(boolean bool){
@@ -188,7 +201,6 @@ public class RadarGraphView extends SurfaceView implements Callback{
 		@Override
 		public void run() {
 			Canvas canvas = null;
-			GraphCanvasWrapper graphCanvasWrapper = null;
 			Log.e(TAG,"height = " + height);
 			Log.e(TAG,"width = " + width);
 			
@@ -211,7 +223,6 @@ public class RadarGraphView extends SurfaceView implements Callback{
 				}
 				
 				canvas = mHolder.lockCanvas();
-				graphCanvasWrapper = new GraphCanvasWrapper(canvas, width, height, mRadarGraphVO.getPaddingLeft(), mRadarGraphVO.getPaddingBottom());
 				
 				synchronized(mHolder){
 					synchronized (touchLock) {
@@ -224,19 +235,19 @@ public class RadarGraphView extends SurfaceView implements Callback{
 							}
 
 							//TODO draw cross line
-							drawCrossLine(graphCanvasWrapper);
+							drawCrossLine(canvas);
 							
 							//TODO x coord dot line
-							drawBaseLine(graphCanvasWrapper);
+							drawBaseLine(canvas);
 							
 //							//TODO draw outline
 							
 							//TODO draw text
-							drawYText(graphCanvasWrapper);
+							drawYText(canvas);
 							
 							//Graph
-//							drawGraphRegion(graphCanvasWrapper);
-//							drawGraph(graphCanvasWrapper);
+							drawGraphRegion(canvas);
+							drawGraph(canvas);
 							
 							
 							drawGraphName(canvas);
@@ -247,8 +258,8 @@ public class RadarGraphView extends SurfaceView implements Callback{
 						} catch (Exception e) {
 							e.printStackTrace();
 						} finally {
-							if(graphCanvasWrapper.getCanvas() != null){
-								mHolder.unlockCanvasAndPost(graphCanvasWrapper.getCanvas());
+							if(canvas != null){
+								mHolder.unlockCanvasAndPost(canvas);
 							}
 						}
 						
@@ -268,16 +279,19 @@ public class RadarGraphView extends SurfaceView implements Callback{
 		}
 		
 		private void calcTimePass(){
-			long curTime = System.currentTimeMillis();
-			long gapTime = curTime - animStartTime;
-			long animDuration = mRadarGraphVO.getAnimation().getDuration();
-			if(gapTime >= animDuration){
-				gapTime = animDuration;
+			if(isAnimation){
+				long curTime = System.currentTimeMillis();
+				long gapTime = curTime - animStartTime;
+				long animDuration = mRadarGraphVO.getAnimation().getDuration();
+				if(gapTime >= animDuration){
+					gapTime = animDuration;
+					isDirty = false;
+				}
+				
+				anim = mRadarGraphVO.getArrGraph().get(0).getCoordinateArr().length * (float)gapTime/(float)animDuration;
+			}else{
 				isDirty = false;
 			}
-			
-			anim = mRadarGraphVO.getArrGraph().get(0).getCoordinateArr().length * (float)gapTime/(float)animDuration;
-			
 //			Log.e(TAG,"curTime = " + curTime + " , animStartTime = " + animStartTime);
 //			Log.e(TAG,"anim = " + anim + " , gapTime = " + gapTime);
 		}
@@ -390,17 +404,17 @@ public class RadarGraphView extends SurfaceView implements Callback{
 			}
 		}
 		
-		private void drawCrossLine(GraphCanvasWrapper graphCanvas) {
+		private void drawCrossLine(Canvas canvas) {
 			PointF dot = new PointF(chartCenter.x + 00, chartCenter.y - chartSize);
 			for (int i = 0; i < fieldCount; i++) {
 				float radAngle = (float) (Converter.DegreeToRadian(360/fieldCount * (i))); // use radian
 				PointF rotateDot = getRotatePoint(dot, radAngle);
 				
-				graphCanvas.getCanvas().drawLine(chartCenter.x, chartCenter.y,
+				canvas.drawLine(chartCenter.x, chartCenter.y,
 						rotateDot.x, rotateDot.y, pCrossLine);
 			}
 			
-//			graphCanvas.getCanvas().drawCircle(chartCenter.x, chartCenter.y, 4, pCircle);
+//			canvas.drawCircle(chartCenter.x, chartCenter.y, 4, pCircle);
 		}
 
 		/**
@@ -416,7 +430,7 @@ public class RadarGraphView extends SurfaceView implements Callback{
 		}
 		
 
-		private void drawBaseLine(GraphCanvasWrapper graphCanvas) {
+		private void drawBaseLine(Canvas canvas) {
 //			for (int i = 1; mRadarGraphVO.getIncrement() * i <= mRadarGraphVO.getMaxValue(); i++) {
 //				
 //				float y = yLength * mRadarGraphVO.getIncrement() * i/mRadarGraphVO.getMaxValue();
@@ -424,7 +438,6 @@ public class RadarGraphView extends SurfaceView implements Callback{
 //				graphCanvas.drawLine(0, y, chartXLength, y, pBaseLine);
 //			}
 			
-			int baselineCount = 5;
 			PointF dot[] = {
 					new PointF(chartCenter.x + 00, chartCenter.y - chartSize / baselineCount * 1),
 					new PointF(chartCenter.x + 00, chartCenter.y - chartSize / baselineCount * 2),
@@ -443,9 +456,9 @@ public class RadarGraphView extends SurfaceView implements Callback{
 					}else{
 						linePath[j].lineTo(rotateDot.x, rotateDot.y);
 					}
-					graphCanvas.getCanvas().drawPath(linePath[j], pBaseLine);
+					canvas.drawPath(linePath[j], pBaseLine);
 				}
-//				graphCanvas.getCanvas().drawLine(chartCenter.x, chartCenter.y,
+//				canvas.drawLine(chartCenter.x, chartCenter.y,
 //						rotateDot.x, rotateDot.y, pCrossLine);
 			}
 		}
@@ -454,13 +467,22 @@ public class RadarGraphView extends SurfaceView implements Callback{
 		 * set graph line color
 		 */
 		private void setPaint() {
-			p = new Paint();
-			p.setFlags(Paint.ANTI_ALIAS_FLAG);
-			p.setAntiAlias(true); //text anti alias
-			p.setFilterBitmap(true); // bitmap anti alias
-			p.setColor(Color.BLUE);
-			p.setStrokeWidth(3);
-			p.setStyle(Style.STROKE);
+			pGraphColor = new Paint();
+			pGraphColor.setFlags(Paint.ANTI_ALIAS_FLAG);
+			pGraphColor.setAntiAlias(true); //text anti alias
+			pGraphColor.setFilterBitmap(true); // bitmap anti alias
+			pGraphColor.setColor(Color.BLUE);
+			pGraphColor.setStrokeWidth(3);
+			pGraphColor.setStyle(Style.STROKE);
+			
+			pGraphRegionColor = new Paint();
+			pGraphRegionColor.setFlags(Paint.ANTI_ALIAS_FLAG);
+			pGraphRegionColor.setAntiAlias(true); //text anti alias
+			pGraphRegionColor.setFilterBitmap(true); // bitmap anti alias
+			pGraphRegionColor.setColor(Color.BLUE);
+			pGraphRegionColor.setAlpha(127);
+			pGraphRegionColor.setStrokeWidth(1);
+			pGraphRegionColor.setStyle(Style.FILL_AND_STROKE);
 			
 			pCircle = new Paint();
 			pCircle.setFlags(Paint.ANTI_ALIAS_FLAG);
@@ -492,137 +514,148 @@ public class RadarGraphView extends SurfaceView implements Callback{
 			pMarkText.setColor(Color.BLACK); 
 		}
 
+		/**
+		 * draw Graph Region
+		 */
+		private void drawGraphRegion(Canvas canvas) {
+			if(isDrawRegion){
+				if (isAnimation){
+//					drawGraphRegionWithAnimation(graphCanvas);
+				}else{
+					drawGraphRegionWithoutAnimation(canvas);
+				}
+			}
+		}
 		
 		/**
 		 * draw Graph
 		 */
-		private void drawGraph(GraphCanvasWrapper graphCanvas) {
+		private void drawGraph(Canvas canvas) {
 			
 			if (isAnimation){
-				drawGraphWithAnimation(graphCanvas);
+//				drawGraphWithAnimation(canvas);
 			}else{
-				drawGraphWithoutAnimation(graphCanvas);
+				drawGraphWithoutAnimation(canvas);
 			}
 		}
 		
 		/**
 		 *	draw graph without animation 
 		 */
-		private void drawGraphWithoutAnimation(GraphCanvasWrapper graphCanvas) {
+		private void drawGraphRegionWithoutAnimation(Canvas canvas) {
 			
 			for (int i = 0; i < mRadarGraphVO.getArrGraph().size(); i++) {
-				GraphPath linePath = new GraphPath(width, height, mRadarGraphVO.getPaddingLeft(), mRadarGraphVO.getPaddingBottom());
-				GraphPath regionPath = new GraphPath(width, height, mRadarGraphVO.getPaddingLeft(), mRadarGraphVO.getPaddingBottom());
-				boolean firstSet = false;
-				float x = 0;
-				float y = 0;
-				p.setColor(mRadarGraphVO.getArrGraph().get(i).getColor());
-				pCircle.setColor(mRadarGraphVO.getArrGraph().get(i).getColor());
-				float xGap = xLength/(mRadarGraphVO.getArrGraph().get(i).getCoordinateArr().length-1);
-				
-				Bitmap icon = arrIcon.get(i);
-				
-				for (int j = 0; j < mRadarGraphVO.getArrGraph().get(i).getCoordinateArr().length; j++) {
-					if(j < mRadarGraphVO.getArrGraph().get(i).getCoordinateArr().length){
-						
-						if (!firstSet) {
-							
-							x = xGap * j ;
-							y = yLength * mRadarGraphVO.getArrGraph().get(i).getCoordinateArr()[j]/mRadarGraphVO.getMaxValue();
-							
-							linePath.moveTo(x, y);
-							
-							firstSet = true;
-						} else {
-							x = xGap * j;
-							y = yLength * mRadarGraphVO.getArrGraph().get(i).getCoordinateArr()[j]/mRadarGraphVO.getMaxValue();
-							
-							linePath.lineTo(x, y);
-						}
-						
-						if(icon == null){
-							graphCanvas.drawCircle(x, y, 4, pCircle);
-						}else{
-							graphCanvas.drawBitmapIcon(icon, x, y, null);
-						}
+				float[] graph = mRadarGraphVO.getArrGraph().get(i).getCoordinateArr();
+				pGraphRegionColor.setColor(mRadarGraphVO.getArrGraph().get(i).getColor());
+				pGraphRegionColor.setAlpha(127);
+				Path lineRegionPath = new Path();
+				for (int j = 0; j < fieldCount; j++) {
+
+					PointF dot = new PointF(chartCenter.x + 00, chartCenter.y - graph[j] / MAX_VALUE * chartSize);
+					float radAngle = (float) (Converter.DegreeToRadian(360/fieldCount * (j))); // use radian
+					PointF rotateDot = getRotatePoint(dot, radAngle);
+					
+					if (j == 0) {
+						lineRegionPath.moveTo(rotateDot.x, rotateDot.y);
+					} else {
+						lineRegionPath.lineTo(rotateDot.x, rotateDot.y);
 					}
 				}
-				
-				graphCanvas.getCanvas().drawPath(linePath, p);
+				canvas.drawPath(lineRegionPath, pGraphRegionColor);
+			}
+		}
+		
+		/**
+		 *	draw graph without animation 
+		 */
+		private void drawGraphWithoutAnimation(Canvas canvas) {
+			
+			for (int i = 0; i < mRadarGraphVO.getArrGraph().size(); i++) {
+				float[] graph = mRadarGraphVO.getArrGraph().get(i).getCoordinateArr();
+				pGraphColor.setColor(mRadarGraphVO.getArrGraph().get(i).getColor());
+				pCircle.setColor(mRadarGraphVO.getArrGraph().get(i).getColor());
+				Bitmap icon = arrIcon.get(i);
+				for (int j = 0; j < fieldCount; j++) {
+					
+					PointF dot = new PointF(chartCenter.x + 00, chartCenter.y - graph[j] / MAX_VALUE * chartSize);
+					float radAngle = (float) (Converter.DegreeToRadian(360/fieldCount * (j))); // use radian
+					PointF rotateDot = getRotatePoint(dot, radAngle);
+					
+					if(icon == null){
+						canvas.drawCircle(rotateDot.x, rotateDot.y, 4, pCircle);
+					}else{
+						canvas.drawBitmap(icon, rotateDot.x - icon.getWidth()/2,
+								rotateDot.y - icon.getHeight()/2, null);
+					}
+				}
 			}
 		}
 
 		/**
 		 *	draw graph with animation 
 		 */
-		private void drawGraphWithAnimation(GraphCanvasWrapper graphCanvas) {
-			//for draw animation
-			float prev_x = 0;
-			float prev_y = 0;
-			
-			float next_x = 0;
-			float next_y = 0;
-			
-			float value = 0;
-			float mode = 0;
-			
-			for (int i = 0; i < mRadarGraphVO.getArrGraph().size(); i++) {
-				GraphPath linePath = new GraphPath(width, height, mRadarGraphVO.getPaddingLeft(), mRadarGraphVO.getPaddingBottom());
-				GraphPath regionPath = new GraphPath(width, height, mRadarGraphVO.getPaddingLeft(), mRadarGraphVO.getPaddingBottom());
-				boolean firstSet = false;
-				float x = 0;
-				float y = 0;
-				p.setColor(mRadarGraphVO.getArrGraph().get(i).getColor());
-				pCircle.setColor(mRadarGraphVO.getArrGraph().get(i).getColor());
-				float xGap = xLength/(mRadarGraphVO.getArrGraph().get(i).getCoordinateArr().length-1);
-				
-				Bitmap icon = arrIcon.get(i);
-				value = anim/1;
-				mode = anim %1;
-				
-				for (int j = 0; j < value+1; j++) {
-					if(j < mRadarGraphVO.getArrGraph().get(i).getCoordinateArr().length){
-						
-						if (!firstSet) {
-							
-							x = xGap * j ;
-							y = yLength * mRadarGraphVO.getArrGraph().get(i).getCoordinateArr()[j]/mRadarGraphVO.getMaxValue();
-							
-							linePath.moveTo(x, y);
-							
-							firstSet = true;
-						} else {
-							x = xGap * j;
-							y = yLength * mRadarGraphVO.getArrGraph().get(i).getCoordinateArr()[j]/mRadarGraphVO.getMaxValue();
-							
-							if( j > value ){
-								next_x = x - prev_x;
-								next_y = y - prev_y;
-								
-								linePath.lineTo(prev_x + next_x * mode, prev_y + next_y * mode);
-							}else{
-								linePath.lineTo(x, y);
-							}
-						}
-						
-						if(icon == null){
-							graphCanvas.drawCircle(x, y, 4, pCircle);
-						}else{
-							graphCanvas.drawBitmapIcon(icon, x, y, null);
-						}
-						prev_x = x;
-						prev_y = y;
-					}
-				}
-				
-				graphCanvas.getCanvas().drawPath(linePath, p);
-			}
-		}
+//		private void drawGraphWithAnimation(Canvas canvas) {
+//			//for draw animation
+//			float prev_x = 0;
+//			float prev_y = 0;
+//			
+//			float next_x = 0;
+//			float next_y = 0;
+//			
+//			float value = 0;
+//			float mode = 0;
+//			
+//			for (int i = 0; i < mRadarGraphVO.getArrGraph().size(); i++) {
+//				GraphPath linePath = new GraphPath(width, height, mRadarGraphVO.getPaddingLeft(), mRadarGraphVO.getPaddingBottom());
+//				GraphPath regionPath = new GraphPath(width, height, mRadarGraphVO.getPaddingLeft(), mRadarGraphVO.getPaddingBottom());
+//				boolean firstSet = false;
+//				float x = 0;
+//				float y = 0;
+//				pGraphColor.setColor(mRadarGraphVO.getArrGraph().get(i).getColor());
+//				pCircle.setColor(mRadarGraphVO.getArrGraph().get(i).getColor());
+//				float xGap = xLength/(mRadarGraphVO.getArrGraph().get(i).getCoordinateArr().length-1);
+//				
+//				Bitmap icon = arrIcon.get(i);
+//				value = anim/1;
+//				mode = anim %1;
+//				
+//				for (int j = 0; j < value+1; j++) {
+//					if(j < mRadarGraphVO.getArrGraph().get(i).getCoordinateArr().length){
+//						
+//						if (!firstSet) {
+//							
+//							linePath.moveTo(x, y);
+//							
+//							firstSet = true;
+//						} else {
+//							if( j > value ){
+//								next_x = x - prev_x;
+//								next_y = y - prev_y;
+//								
+//								linePath.lineTo(prev_x + next_x * mode, prev_y + next_y * mode);
+//							}else{
+//								linePath.lineTo(x, y);
+//							}
+//						}
+//						
+//						if(icon == null){
+//							canvas.drawCircle(x, y, 4, pCircle);
+//						}else{
+//							canvas.drawBitmapIcon(icon, x, y, null);
+//						}
+//						prev_x = x;
+//						prev_y = y;
+//					}
+//				}
+//				
+//				canvas.drawPath(linePath, pGraphColor);
+//			}
+//		}
 		
 		/**
 		 * draw Y Text
 		 */
-		private void drawYText(GraphCanvasWrapper graphCanvas) {
+		private void drawYText(Canvas canvas) {
 //			for (int i = 0; mRadarGraphVO.getIncrement() * i <= mRadarGraphVO.getMaxValue(); i++) {
 //				
 //				String mark = Float.toString(mRadarGraphVO.getIncrement() * i);

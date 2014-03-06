@@ -7,12 +7,10 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.ViewGroup;
 
-import com.handstudio.android.hzgrapherlib.animation.GraphAnimation;
-import com.handstudio.android.hzgrapherlib.graphview.LineGraphView;
 import com.handstudio.android.hzgrapherlib.graphview.RadarGraphView;
 import com.handstudio.android.hzgrapherlib.vo.GraphNameBox;
-import com.handstudio.android.hzgrapherlib.vo.linegraph.LineGraph;
-import com.handstudio.android.hzgrapherlib.vo.linegraph.LineGraphVO;
+import com.handstudio.android.hzgrapherlib.vo.radargraph.RadarGraph;
+import com.handstudio.android.hzgrapherlib.vo.radargraph.RadarGraphVO;
 
 public class RadarGraphActivity extends Activity {
 
@@ -32,7 +30,7 @@ public class RadarGraphActivity extends Activity {
 
 	private void setRadarGraph() {
 		//all setting
-		LineGraphVO vo = makeLineGraphAllSetting();
+		RadarGraphVO vo = makeLineGraphAllSetting();
 		
 		//default setting
 //		LineGraphVO vo = makeRadarGraphDefaultSetting();
@@ -44,19 +42,19 @@ public class RadarGraphActivity extends Activity {
 	 * make simple line graph
 	 * @return
 	 */
-	private LineGraphVO makeRadarGraphDefaultSetting() {
+	private RadarGraphVO makeRadarGraphDefaultSetting() {
 		
 		String[] legendArr 	= {"1","2","3","4","5"};
-		float[] graph1 		= {500,100,300,200,100};
-		float[] graph2 		= {000,100,200,100,200};
-		float[] graph3 		= {200,500,300,400,000};
+		float[] graph1 		= {100,90,80,70,90};
+		float[] graph2 		= {70,50,80,40,90};
+		float[] graph3 		= {20,70,90,90,90};
 		
-		List<LineGraph> arrGraph 		= new ArrayList<LineGraph>();
-		arrGraph.add(new LineGraph("android", 0xaa66ff33, graph1));
-		arrGraph.add(new LineGraph("ios", 0xaa00ffff, graph2));
-		arrGraph.add(new LineGraph("tizen", 0xaaff0066, graph3));
+		List<RadarGraph> arrGraph 		= new ArrayList<RadarGraph>();
+		arrGraph.add(new RadarGraph("android", 0xaa66ff33, graph1));
+		arrGraph.add(new RadarGraph("ios", 0xaa00ffff, graph2));
+		arrGraph.add(new RadarGraph("tizen", 0xaaff0066, graph3));
 		
-		LineGraphVO vo = new LineGraphVO(legendArr, arrGraph);
+		RadarGraphVO vo = new RadarGraphVO(legendArr, arrGraph);
 		return vo;
 	}
 
@@ -64,46 +62,46 @@ public class RadarGraphActivity extends Activity {
 	 * make line graph using options
 	 * @return
 	 */
-	private LineGraphVO makeLineGraphAllSetting() {
+	private RadarGraphVO makeLineGraphAllSetting() {
 		//BASIC LAYOUT SETTING
 		//padding
-		int paddingBottom 	= LineGraphVO.DEFAULT_PADDING;
-		int paddingTop 		= LineGraphVO.DEFAULT_PADDING;
-		int paddingLeft 	= LineGraphVO.DEFAULT_PADDING;
-		int paddingRight 	= LineGraphVO.DEFAULT_PADDING;
+		int paddingBottom 	= RadarGraphVO.DEFAULT_PADDING;
+		int paddingTop 		= RadarGraphVO.DEFAULT_PADDING;
+		int paddingLeft 	= RadarGraphVO.DEFAULT_PADDING;
+		int paddingRight 	= RadarGraphVO.DEFAULT_PADDING;
 
 		//graph margin
-		int marginTop 		= LineGraphVO.DEFAULT_MARGIN_TOP;
-		int marginRight 	= LineGraphVO.DEFAULT_MARGIN_RIGHT;
+		int marginTop 		= RadarGraphVO.DEFAULT_MARGIN_TOP;
+		int marginRight 	= RadarGraphVO.DEFAULT_MARGIN_RIGHT;
 
 		//max value
-		int maxValue 		= LineGraphVO.DEFAULT_MAX_VALUE;
+		int maxValue 		= RadarGraphVO.DEFAULT_MAX_VALUE;
 
 		//increment
-		int increment 		= LineGraphVO.DEFAULT_INCREMENT;
+		int increment 		= RadarGraphVO.DEFAULT_INCREMENT;
 		
 		//GRAPH SETTING
 		String[] legendArr 	= {"1","2","3","4","5"};
-		float[] graph1 		= {500,100,300,200,100};
-		float[] graph2 		= {000,100,200,100,200};
-		float[] graph3 		= {200,500,300,400,000};
+		float[] graph1 		= {100,90,80,70,90};
+		float[] graph2 		= {70,50,80,40,90};
+		float[] graph3 		= {20,70,90,90,90};
 		
-		List<LineGraph> arrGraph 		= new ArrayList<LineGraph>();
+		List<RadarGraph> arrGraph 		= new ArrayList<RadarGraph>();
 		
-		arrGraph.add(new LineGraph("android", 0xaa66ff33, graph1, R.drawable.ic_launcher));
-		arrGraph.add(new LineGraph("ios", 0xaa00ffff, graph2));
-		arrGraph.add(new LineGraph("tizen", 0xaaff0066, graph3));
+		arrGraph.add(new RadarGraph("android", 0xaa66ff33, graph1, R.drawable.ic_launcher));
+		arrGraph.add(new RadarGraph("ios", 0xaa00ffff, graph2));
+		arrGraph.add(new RadarGraph("tizen", 0xaaff0066, graph3));
 		
-		LineGraphVO vo = new LineGraphVO(
+		RadarGraphVO vo = new RadarGraphVO(
 				paddingBottom, paddingTop, paddingLeft, paddingRight,
 				marginTop, marginRight, maxValue, increment, legendArr, arrGraph);
 		
 		//set animation
-		vo.setAnimation(new GraphAnimation(GraphAnimation.LINEAR_ANIMATION, GraphAnimation.DEFAULT_DURATION));
+//		vo.setAnimation(new GraphAnimation(GraphAnimation.LINEAR_ANIMATION, GraphAnimation.DEFAULT_DURATION));
 		//set graph name box
 		vo.setGraphNameBox(new GraphNameBox());
 		//set draw graph region
-//		vo.setDrawRegion(true);
+		vo.setDrawRegion(true);
 		
 		//use icon
 //		arrGraph.add(new Graph(0xaa66ff33, graph1, R.drawable.icon1));
