@@ -32,7 +32,7 @@ import com.handstudio.android.hzgrapherlib.vo.linegraph.LineGraphVO;
 
 public class LineComapreGraphView extends SurfaceView implements Callback{
 
-	public static final String TAG = "LineGraphView";
+	public static final String TAG = "LineComapreGraphView";
 	private SurfaceHolder mHolder;
 	private DrawThread mDrawThread;
 	
