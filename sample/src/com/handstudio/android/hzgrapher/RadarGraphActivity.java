@@ -44,10 +44,10 @@ public class RadarGraphActivity extends Activity {
 	 */
 	private RadarGraphVO makeRadarGraphDefaultSetting() {
 		
-		String[] legendArr 	= {"1","2","3","4","5"};
-		float[] graph1 		= {100,90,80,70,90};
-		float[] graph2 		= {70,50,80,40,90};
-		float[] graph3 		= {20,70,90,90,90};
+		String[] legendArr 	= {"1 best","2 worst","3 long long long ","4","5 asdgasdgasdga", "sdg"};
+		float[] graph1 		= {100,90,80,70,90, 70};
+		float[] graph2 		= {70,50,80,40,90, 88};
+		float[] graph3 		= {20,70,90,90,90, 17};
 		
 		List<RadarGraph> arrGraph 		= new ArrayList<RadarGraph>();
 		arrGraph.add(new RadarGraph("android", 0xaa66ff33, graph1));
@@ -81,10 +81,10 @@ public class RadarGraphActivity extends Activity {
 		int increment 		= RadarGraphVO.DEFAULT_INCREMENT;
 		
 		//GRAPH SETTING
-		String[] legendArr 	= {"1","2","3","4","5"};
-		float[] graph1 		= {100,90,80,70,90};
-		float[] graph2 		= {70,50,80,40,90};
-		float[] graph3 		= {20,70,90,90,90};
+		String[] legendArr 	= {"1 best","2 worst","3 long long long ","4","5 asdgasdgasdga", "sdg"};
+		float[] graph1 		= {100,90,80,70,90, 70};
+		float[] graph2 		= {70,50,80,40,90, 88};
+		float[] graph3 		= {20,70,90,90,90, 17};
 		
 		List<RadarGraph> arrGraph 		= new ArrayList<RadarGraph>();
 		

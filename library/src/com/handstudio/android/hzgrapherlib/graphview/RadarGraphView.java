@@ -562,6 +562,8 @@ public class RadarGraphView extends SurfaceView implements Callback{
 				pGraphRegionColor.setColor(mRadarGraphVO.getArrGraph().get(i).getColor());
 				pGraphRegionColor.setAlpha(127);
 				Path lineRegionPath = new Path();
+				
+				PointF first = new PointF();
 				for (int j = 0; j < fieldCount; j++) {
 
 					PointF dot = new PointF(chartCenter.x + 00, chartCenter.y - graph[j] / MAX_VALUE * chartSize);
@@ -571,6 +573,17 @@ public class RadarGraphView extends SurfaceView implements Callback{
 					if (j == 0) {
 						lineRegionPath.moveTo(rotateDot.x, rotateDot.y);
 					} else {
+						lineRegionPath.lineTo(rotateDot.x, rotateDot.y);
+					}
+					
+					if (j == 0) {
+						first.x = rotateDot.x;
+						first.y = rotateDot.y;
+						lineRegionPath.moveTo(rotateDot.x, rotateDot.y);
+					} else if (j == fieldCount - 1){
+						lineRegionPath.lineTo(rotateDot.x, rotateDot.y);
+						lineRegionPath.lineTo(first.x, first.y);
+					}else{
 						lineRegionPath.lineTo(rotateDot.x, rotateDot.y);
 					}
 				}
@@ -588,6 +601,9 @@ public class RadarGraphView extends SurfaceView implements Callback{
 				pGraphColor.setColor(mRadarGraphVO.getArrGraph().get(i).getColor());
 				pCircle.setColor(mRadarGraphVO.getArrGraph().get(i).getColor());
 				Bitmap icon = arrIcon.get(i);
+				Path linePath = new Path();
+				
+				PointF first = new PointF();
 				for (int j = 0; j < fieldCount; j++) {
 					
 					PointF dot = new PointF(chartCenter.x + 00, chartCenter.y - graph[j] / MAX_VALUE * chartSize);
@@ -600,7 +616,19 @@ public class RadarGraphView extends SurfaceView implements Callback{
 						canvas.drawBitmap(icon, rotateDot.x - icon.getWidth()/2,
 								rotateDot.y - icon.getHeight()/2, null);
 					}
+
+					if (j == 0) {
+						first.x = rotateDot.x;
+						first.y = rotateDot.y;
+						linePath.moveTo(rotateDot.x, rotateDot.y);
+					} else if (j == fieldCount - 1){
+						linePath.lineTo(rotateDot.x, rotateDot.y);
+						linePath.lineTo(first.x, first.y);
+					}else{
+						linePath.lineTo(rotateDot.x, rotateDot.y);
+					}
 				}
+				canvas.drawPath(linePath, pGraphColor);
 			}
 		}
 
