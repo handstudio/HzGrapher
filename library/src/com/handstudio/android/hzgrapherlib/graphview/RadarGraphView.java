@@ -239,11 +239,12 @@ public class RadarGraphView extends SurfaceView implements Callback{
 							
 							//TODO x coord dot line
 							drawBaseLine(canvas);
+							drawBaseLineText(canvas);
 							
 //							//TODO draw outline
 							
 							//TODO draw text
-							drawYText(canvas);
+							drawXText(canvas);
 							
 							//Graph
 							drawGraphRegion(canvas);
@@ -431,13 +432,6 @@ public class RadarGraphView extends SurfaceView implements Callback{
 		
 
 		private void drawBaseLine(Canvas canvas) {
-//			for (int i = 1; mRadarGraphVO.getIncrement() * i <= mRadarGraphVO.getMaxValue(); i++) {
-//				
-//				float y = yLength * mRadarGraphVO.getIncrement() * i/mRadarGraphVO.getMaxValue();
-//				
-//				graphCanvas.drawLine(0, y, chartXLength, y, pBaseLine);
-//			}
-			
 			PointF dot[] = {
 					new PointF(chartCenter.x + 00, chartCenter.y - chartSize / baselineCount * 1),
 					new PointF(chartCenter.x + 00, chartCenter.y - chartSize / baselineCount * 2),
@@ -458,8 +452,27 @@ public class RadarGraphView extends SurfaceView implements Callback{
 					}
 					canvas.drawPath(linePath[j], pBaseLine);
 				}
-//				canvas.drawLine(chartCenter.x, chartCenter.y,
-//						rotateDot.x, rotateDot.y, pCrossLine);
+			}
+		}
+		
+		private void drawBaseLineText(Canvas canvas) {
+			
+			PointF dot[] = {
+					new PointF(chartCenter.x + 00, chartCenter.y - chartSize / baselineCount * 1),
+					new PointF(chartCenter.x + 00, chartCenter.y - chartSize / baselineCount * 2),
+					new PointF(chartCenter.x + 00, chartCenter.y - chartSize / baselineCount * 3),
+					new PointF(chartCenter.x + 00, chartCenter.y - chartSize / baselineCount * 4),
+					new PointF(chartCenter.x + 00, chartCenter.y - chartSize / baselineCount * 5)};
+			
+			for (int i = 0; i < baselineCount; i++) {
+				PointF rotateDot = dot[i];
+
+				String mark = Integer.toString(mRadarGraphVO.getIncrement() * (i+1));
+				pMarkText.measureText(mark);
+				pMarkText.setTextSize(20);
+				Rect rect = new Rect();
+				pMarkText.getTextBounds(mark, 0, mark.length(), rect);
+				canvas.drawText(mark, rotateDot.x -(rect.width() + 20), rotateDot.y + rect.height()/2, pMarkText);
 			}
 		}
 
@@ -655,7 +668,7 @@ public class RadarGraphView extends SurfaceView implements Callback{
 		/**
 		 * draw Y Text
 		 */
-		private void drawYText(Canvas canvas) {
+		private void drawXText(Canvas canvas) {
 //			for (int i = 0; mRadarGraphVO.getIncrement() * i <= mRadarGraphVO.getMaxValue(); i++) {
 //				
 //				String mark = Float.toString(mRadarGraphVO.getIncrement() * i);
