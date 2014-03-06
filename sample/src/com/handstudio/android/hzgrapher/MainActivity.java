@@ -27,7 +27,11 @@ public class MainActivity extends Activity {
 		case R.id.btnCompareGraph:
 			startActivity(LineCompareGraphActivity.class);
 			break;
-
+			
+		case R.id.btnRadarGraph:
+			startActivity(RadarGraphActivity.class);
+			break;
+			
 		default:
 			break;
 		}

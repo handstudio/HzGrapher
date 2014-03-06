@@ -38,6 +38,11 @@
             android:label="@string/app_name" >
         </activity>
         
+        <activity
+            android:name="com.handstudio.android.hzgrapher.RadarGraphActivity"
+            android:label="@string/app_name" >
+        </activity>
+        
     </application>
 
 </manifest>
