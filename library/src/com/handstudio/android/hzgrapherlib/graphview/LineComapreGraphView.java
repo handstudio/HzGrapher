@@ -276,6 +276,7 @@ public class LineComapreGraphView extends SurfaceView implements Callback{
 				}
 				
 				anim = mLineGraphVO.getArrGraph().get(0).getCoordinateArr().length * (float)gapTime/(float)animDuration;
+//				anim = anim + 0.1f;
 			}else{
 				isDirty = false;
 			}
@@ -642,7 +643,7 @@ public class LineComapreGraphView extends SurfaceView implements Callback{
 			float next_x = 0;
 			float next_y = 0;
 			
-			float value = 0;
+			int value = 0;
 			float mode = 0;
 			
 			Canvas c = new Canvas(b);
@@ -666,10 +667,12 @@ public class LineComapreGraphView extends SurfaceView implements Callback{
 				pCircle.setColor(mLineGraphVO.getArrGraph().get(i).getColor());
 				float xGap = xLength/(mLineGraphVO.getArrGraph().get(i).getCoordinateArr().length-1);
 				
-				value = anim/1;
+				value = (int) (anim/1);
 				mode = anim %1;
 				
-				for (int j = 0; j < value+1; j++) {
+				Log.e("", "value = " + value + "\t ,mode = " + mode);
+				
+				for (int j = 0; j <= value+1; j++) {
 					if(j < mLineGraphVO.getArrGraph().get(i).getCoordinateArr().length){
 						
 						if (!firstSet) {
@@ -697,8 +700,12 @@ public class LineComapreGraphView extends SurfaceView implements Callback{
 						
 						prev_x = x;
 						prev_y = y;
+						
+//						Log.e("", "j = " + j + "\t x = " + x + "\t prev_x = " + prev_x);
 					}
 				}
+//				Log.e("", "==================================");
+//				Log.e("", "i = " + i + "\tprev_x = " + prev_x + "\t ,next_x * mode = " + (next_x * mode));
 				float x_bg = prev_x + next_x * mode;
 				if(x_bg >= xLength){
 					x_bg = xLength;
