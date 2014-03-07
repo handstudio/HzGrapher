@@ -670,7 +670,7 @@ public class LineComapreGraphView extends SurfaceView implements Callback{
 				value = (int) (anim/1);
 				mode = anim %1;
 				
-				Log.e("", "value = " + value + "\t ,mode = " + mode);
+//				Log.e("", "value = " + value + "\t ,mode = " + mode);
 				
 				for (int j = 0; j <= value+1; j++) {
 					if(j < mLineGraphVO.getArrGraph().get(i).getCoordinateArr().length){
