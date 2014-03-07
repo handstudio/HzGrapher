@@ -26,6 +26,8 @@ import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 
 import com.handstudio.android.hzgrapherlib.canvas.GraphCanvasWrapper;
+import com.handstudio.android.hzgrapherlib.error.ErrorCode;
+import com.handstudio.android.hzgrapherlib.error.ErrorDetector;
 import com.handstudio.android.hzgrapherlib.path.GraphPath;
 import com.handstudio.android.hzgrapherlib.vo.GraphNameBox;
 import com.handstudio.android.hzgrapherlib.vo.linegraph.LineGraphVO;
@@ -57,6 +59,9 @@ public class LineComapreGraphView extends SurfaceView implements Callback{
 	}
 	
 	private void initView(Context context, LineGraphVO vo) {
+		ErrorCode ec = ErrorDetector.checkLineCompareGraphObject(vo);
+		ec.printError();
+		
 		mHolder = getHolder();
 		mHolder.addCallback(this);
 	}
