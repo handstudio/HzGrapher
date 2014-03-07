@@ -576,11 +576,7 @@ public class LineGraphView extends SurfaceView implements Callback{
 							if( j > value){
 								next_x = x - prev_x;
 								next_y = y - prev_y;
-								if(mode != 0){
-									regionPath.lineTo(prev_x + next_x * mode, prev_y + next_y * mode);
-								}else{
-									regionPath.lineTo(prev_x + next_x, prev_y + next_y);
-								}
+								regionPath.lineTo(prev_x + next_x * mode, prev_y + next_y * mode);
 							}else{
 								regionPath.lineTo(x, y);
 							}
