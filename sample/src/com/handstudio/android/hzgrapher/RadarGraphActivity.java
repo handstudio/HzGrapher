@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.ViewGroup;
 
+import com.handstudio.android.hzgrapherlib.animation.GraphAnimation;
 import com.handstudio.android.hzgrapherlib.graphview.RadarGraphView;
 import com.handstudio.android.hzgrapherlib.vo.GraphNameBox;
 import com.handstudio.android.hzgrapherlib.vo.radargraph.RadarGraph;
@@ -97,7 +98,7 @@ public class RadarGraphActivity extends Activity {
 				marginTop, marginRight, maxValue, increment, legendArr, arrGraph);
 		
 		//set animation
-//		vo.setAnimation(new GraphAnimation(GraphAnimation.LINEAR_ANIMATION, GraphAnimation.DEFAULT_DURATION));
+		vo.setAnimation(new GraphAnimation(GraphAnimation.LINEAR_ANIMATION, GraphAnimation.DEFAULT_DURATION*3));
 		//set graph name box
 		vo.setGraphNameBox(new GraphNameBox());
 		//set draw graph region
