@@ -539,7 +539,7 @@ public class LineGraphView extends SurfaceView implements Callback{
 			float next_x = 0;
 			float next_y = 0;
 			
-			float value = 0;
+			int value = 0;
 			float mode = 0;
 			
 			boolean isDrawRegion = mLineGraphVO.isDrawRegion();
@@ -553,11 +553,11 @@ public class LineGraphView extends SurfaceView implements Callback{
 				pCircle.setColor(mLineGraphVO.getArrGraph().get(i).getColor());
 				float xGap = xLength/(mLineGraphVO.getArrGraph().get(i).getCoordinateArr().length-1);
 				
-				value = anim/1;
+				value = (int) (anim/1);
 				mode = anim %1;
 				
 				boolean isFinish = false;
-				for (int j = 0; j < value+1; j++) {
+				for (int j = 0; j <= value+1; j++) {
 					if(j < mLineGraphVO.getArrGraph().get(i).getCoordinateArr().length){
 						
 						if (!firstSet) {
@@ -573,11 +573,14 @@ public class LineGraphView extends SurfaceView implements Callback{
 							x = xGap * j;
 							y = yLength * mLineGraphVO.getArrGraph().get(i).getCoordinateArr()[j]/mLineGraphVO.getMaxValue();
 							
-							if( j > value ){
+							if( j > value){
 								next_x = x - prev_x;
 								next_y = y - prev_y;
-								
-								regionPath.lineTo(prev_x + next_x * mode, prev_y + next_y * mode);
+								if(mode != 0){
+									regionPath.lineTo(prev_x + next_x * mode, prev_y + next_y * mode);
+								}else{
+									regionPath.lineTo(prev_x + next_x, prev_y + next_y);
+								}
 							}else{
 								regionPath.lineTo(x, y);
 							}
@@ -698,7 +701,7 @@ public class LineGraphView extends SurfaceView implements Callback{
 							x = xGap * j;
 							y = yLength * mLineGraphVO.getArrGraph().get(i).getCoordinateArr()[j]/mLineGraphVO.getMaxValue();
 							
-							if( j > value ){
+							if( j > value && mode != 0){
 								next_x = x - prev_x;
 								next_y = y - prev_y;
 								

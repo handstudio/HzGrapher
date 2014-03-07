@@ -290,6 +290,7 @@ public class RadarGraphView extends SurfaceView implements Callback{
 				}
 				
 				anim = mRadarGraphVO.getArrGraph().get(0).getCoordinateArr().length * (float)gapTime/(float)animDuration;
+//				anim = anim+0.01f;
 			}else{
 				isDirty = false;
 			}
@@ -630,7 +631,7 @@ public class RadarGraphView extends SurfaceView implements Callback{
 			float next_x = 0;
 			float next_y = 0;
 			
-			float value = 0;
+			int value = 0;
 			float mode = 0;
 			
 			for (int i = 0; i < mRadarGraphVO.getArrGraph().size(); i++) {
@@ -639,10 +640,12 @@ public class RadarGraphView extends SurfaceView implements Callback{
 				pGraphRegionColor.setAlpha(127);
 				Path lineRegionPath = new Path();
 				
-				value = anim/1;
+				value = (int) (anim/1);
 				mode = anim %1;
 				
-				for (int j = 0; j <  value+1; j++) {
+//				Log.e("", "value = " + value + "\t ,mode = " + mode);
+				
+				for (int j = 0; j <=  value+1; j++) {
 
 					PointF dot = new PointF(chartCenter.x + 00, chartCenter.y - graph[j % fieldCount] / MAX_VALUE * chartSize);
 					float radAngle = (float) (Converter.DegreeToRadian(360/fieldCount * (j % fieldCount))); // use radian
@@ -651,7 +654,7 @@ public class RadarGraphView extends SurfaceView implements Callback{
 					if (j == 0) {
 						lineRegionPath.moveTo(rotateDot.x, rotateDot.y);
 					} else {
-						if( j > value ){
+						if( j > value && mode != 0){
 							next_x = rotateDot.x - prev_x;
 							next_y = rotateDot.y - prev_y;
 							
@@ -714,7 +717,7 @@ public class RadarGraphView extends SurfaceView implements Callback{
 						first.y = rotateDot.y;
 						linePath.moveTo(rotateDot.x, rotateDot.y);
 					}else{
-						if( j > value ){
+						if( j > value && mode != 0){
 							next_x = rotateDot.x - prev_x;
 							next_y = rotateDot.y - prev_y;
 							
