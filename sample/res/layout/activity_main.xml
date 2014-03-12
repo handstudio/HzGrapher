@@ -34,6 +34,13 @@
 			android:layout_height="wrap_content"
 			android:text="@string/text_line_compare_graph"
 			android:onClick="onClick"/>
+		
+		<Button 
+		    android:id="@+id/btnCircleGraph"
+		    android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/text_line_circle_graph"
+			android:onClick="onClick"/>
 	       
 	</LinearLayout>
 

@@ -37,6 +37,7 @@
             android:name="com.handstudio.android.hzgrapher.LineCompareGraphActivity"
             android:label="@string/app_name" >
         </activity>
+        <activity android:name="CircleGraphActivity"></activity>
         
     </application>
 

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">HzGrapherSample</string>
-    
     <string name="text_line_graph">LineGraph</string>
     <string name="text_line_graph_with_region">LineGraph with Region</string>
     <string name="text_line_compare_graph">LineCompareGraph</string>
-    
+    <string name="text_line_circle_graph">CircleGraph</string>
+
 </resources>
