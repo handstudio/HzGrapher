@@ -14,6 +14,9 @@ Function
 + Line Compare Graph
 ![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/LineCompareGraph%20.png)
 
++ Radar Graph
+![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/RadarGraph.png)
+
 Feature
 -------
 + easy to customize

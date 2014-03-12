@@ -32,6 +32,10 @@ public class MainActivity extends Activity {
 			startActivity(CircleGraphActivity.class);
 			break;
 
+		case R.id.btnRadarGraph:
+			startActivity(RadarGraphActivity.class);
+			break;
+			
 		default:
 			break;
 		}
