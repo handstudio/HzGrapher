@@ -61,7 +61,7 @@ public class CircleGraphActivity extends Activity {
 		arrGraph.add(new CircleGraph("ios", Color.parseColor("#DC3912"), 1));
 		arrGraph.add(new CircleGraph("tizen", Color.parseColor("#FF9900"), 1));
 		arrGraph.add(new CircleGraph("HTML", Color.parseColor("#109618"), 1));
-		arrGraph.add(new CircleGraph("tizen", Color.parseColor("#990099"), 3));
+		arrGraph.add(new CircleGraph("C", Color.parseColor("#990099"), 3));
 
 		CircleGraphVO vo = new CircleGraphVO(paddingBottom, paddingTop, paddingLeft, paddingRight,marginTop, marginRight,radius, arrGraph);
 		
