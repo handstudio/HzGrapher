@@ -2,12 +2,21 @@ package com.handstudio.android.hzgrapherlib.graphview;
 
 import java.util.List;
 
+import android.R;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuff.Mode;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Region;
 import android.graphics.Paint.Style;
+import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -117,28 +126,47 @@ public class CircleGraphView extends SurfaceView implements Callback{
 
 	class DrawThread extends Thread{
 
-		private int 		mCircleGraphIndex 	=0;
 
 		private boolean 	isRun 				= true;
 		private boolean 	isAnimation 		= false;
 		private boolean 	isDirty 			= true;
 
+		private int 		radius;
+		public int 		mCircleGraphIndex 	=0;
 		private int 		height 				= getHeight();
 		private int 		width 				= getWidth();
-		private int 		radius 				= (width -mCircleGraphVO.getPaddingLeft() - mCircleGraphVO.getPaddingRight())/2;
 
+		private float 		total;
+		private float 		mSweep[];
 		private long 		animStartTime 		= -1;
 		private float 		startAngle 			= 0;
 		private float 		anim 				= 0.0f;
-		private float 		total 				= calculateDataTotal(mCircleGraphVO.getArrGraph());
-		private float 		mSweep[] 			= new float[mCircleGraphVO.getArrGraph().size()];
 
-		Matrix matrix = new Matrix();
+		public Matrix matrix ;
 		//chartCenter
-		PointF chartCenter = new PointF(width/2 + mCircleGraphVO.getCenterX(), height/2 + mCircleGraphVO.getCenterY());
+		private PointF chartCenter;
+
+		private Bitmap bitmap ;
+		private Bitmap bg = null;
+		private Bitmap bm = null;
 
 		public DrawThread(SurfaceHolder holder, Context context) {
 			mHolder = holder;
+
+			int bgResource = mCircleGraphVO.getGraphBG();
+			if(bgResource != -1){
+				Bitmap tempBg = BitmapFactory.decodeResource(getResources(), bgResource);
+				bg = Bitmap.createScaledBitmap(tempBg, width, height, true);
+				tempBg.recycle();
+			}
+			
+			matrix = new Matrix();
+			total = calculateDataTotal(mCircleGraphVO.getArrGraph());
+			mSweep = new float[mCircleGraphVO.getArrGraph().size()];
+			bm = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+			bitmap = Bitmap.createBitmap(width,height, Bitmap.Config.ARGB_8888);
+			radius = (width -mCircleGraphVO.getPaddingLeft() - mCircleGraphVO.getPaddingRight())/2;
+			chartCenter = new PointF(width/2 + mCircleGraphVO.getCenterX(), height/2 + mCircleGraphVO.getCenterY());
 		}
 
 		public void setRunFlag(boolean bool){
@@ -151,7 +179,7 @@ public class CircleGraphView extends SurfaceView implements Callback{
 
 			Canvas canvas = null;
 			GraphCanvasWrapper graphCanvasWrapper = null;
-			
+
 			isAnimation();
 			animStartTime = System.currentTimeMillis();
 
@@ -162,8 +190,8 @@ public class CircleGraphView extends SurfaceView implements Callback{
 			}else{
 				radius 	= (height -(mCircleGraphVO.getPaddingTop() + mCircleGraphVO.getPaddingBottom()))/2;
 			}
-			
-			
+
+
 			while(isRun){
 				//draw only on dirty mode
 				if(!isDirty){
@@ -178,6 +206,9 @@ public class CircleGraphView extends SurfaceView implements Callback{
 				canvas = mHolder.lockCanvas();
 				if( canvas != null){
 					canvas.drawColor(Color.WHITE);
+					if(bg != null){
+						canvas.drawBitmap(bg, 0, 0, null);
+					}
 				}
 				graphCanvasWrapper = new GraphCanvasWrapper(canvas, width, height, mCircleGraphVO.getPaddingLeft(), mCircleGraphVO.getPaddingBottom());
 				calcTimePass();
@@ -186,17 +217,18 @@ public class CircleGraphView extends SurfaceView implements Callback{
 					synchronized (touchLock) {
 
 						try {
+
+							// name box;
+							drawGraphName(canvas);
 							// all draw circle
 							drawCircle(canvas ,graphCanvasWrapper, total);
-							
-							if(anim == 1){
-								// all draw Line
-								drawLine(canvas , mCircleGraphVO.getArrGraph());
-								// all draw Text
-								drawText(canvas , mCircleGraphVO.getArrGraph());
-							}
-							
-							drawGraphName(canvas);
+
+							// all draw Line
+							drawLine(canvas , mCircleGraphVO.getArrGraph());
+							// all draw Text
+							drawText(canvas , mCircleGraphVO.getArrGraph());
+							// draw pie chart 
+							innerCircle(canvas);
 
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -211,6 +243,42 @@ public class CircleGraphView extends SurfaceView implements Callback{
 			}
 
 
+		}
+
+		private  Bitmap makeDst() {
+			Canvas c = new Canvas(bm);
+			Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+			p.setColor(0xFFFFCC44);
+			c.drawCircle(chartCenter.x, chartCenter.y, radius/2, p);
+			return bm;
+		}
+
+
+		private void innerCircle(Canvas canvas){
+
+			if(mCircleGraphVO.isPieChart()){
+
+				if(bg != null){
+					Bitmap mask = makeDst();
+
+					Canvas c = new Canvas(bitmap);
+					c.drawBitmap(bg, 0, 0, null);
+
+					Paint paint = new Paint();
+					paint.setFilterBitmap(false);
+					paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN) );
+
+					c.drawBitmap(mask, 0, 0, paint);
+
+					canvas.drawBitmap(bitmap, 0, 0, null);
+				}else{
+					if(canvas != null){
+						Paint paint = setPaint(Color.WHITE);
+						canvas.drawCircle(chartCenter.x, chartCenter.y, radius/2, paint);
+					}
+				}
+			}
 		}
 
 		private void drawCircle(Canvas canvas , GraphCanvasWrapper graphCanvasWrapper,float total) {
@@ -228,7 +296,7 @@ public class CircleGraphView extends SurfaceView implements Callback{
 				}else{
 					graphCanvasWrapper.drawArc(mBigOval, startAngle, mCircleGraphVO.getArrGraph().get(i).getAngleDegree(), true, paint);
 				}
-				
+
 				startAngle = startAngle + mCircleGraphVO.getArrGraph().get(i).getAngleDegree();
 			}
 		}
@@ -241,38 +309,42 @@ public class CircleGraphView extends SurfaceView implements Callback{
 
 
 		private void drawText(Canvas canvas , List<CircleGraph> circleGraphList) {
-			PointF dot = new PointF(chartCenter.x, chartCenter.y);
+			if(anim == 1){
+				PointF dot = new PointF(chartCenter.x, chartCenter.y);
 
-			float preDegree =0;
+				float preDegree =0;
 
-			for (CircleGraph circleGraph : circleGraphList) {
-				Paint textPaint = setTextPaint(mCircleGraphVO.getTextColor() , mCircleGraphVO.getTextSize());
+				for (CircleGraph circleGraph : circleGraphList) {
+					Paint textPaint = setTextPaint(mCircleGraphVO.getTextColor() , mCircleGraphVO.getTextSize());
 
-				float radAngle = (float) (Converter.DegreeToRadian((float) preDegree + (circleGraph.getAngleDegree()/2))); // use radian
-				preDegree = preDegree + circleGraph.getAngleDegree();
+					float radAngle = (float) (Converter.DegreeToRadian((float) preDegree + (circleGraph.getAngleDegree()/2))); // use radian
+					preDegree = preDegree + circleGraph.getAngleDegree();
 
-				float rate = getCircleRate(circleGraph.getAngleArr());
-				String rateText = changeRateText(rate);
-				PointF rotateDot = getRotatePoint(dot, radAngle,textPaint,rateText);
-				canvas.drawText(rateText, rotateDot.x, rotateDot.y, textPaint);
+					float rate = getCircleRate(circleGraph.getAngleArr());
+					String rateText = changeRateText(rate);
+					PointF rotateDot = getRotatePoint(dot, radAngle,textPaint,rateText);
+					canvas.drawText(rateText, rotateDot.x, rotateDot.y, textPaint);
+				}
 			}
 		}
 
 		private void drawLine(Canvas canvas , List<CircleGraph> circleGraphList) {
-			PointF dot = new PointF(chartCenter.x, chartCenter.y);
-			
-			float preDegree =0;
-			
-			for (CircleGraph circleGraph : circleGraphList) {
-				Paint linePaint = setLinePaint(mCircleGraphVO.getLineColor());
+			if(anim == 1){
+				PointF dot = new PointF(chartCenter.x, chartCenter.y);
 
-				float radAngle = (float) (Converter.DegreeToRadian((float) preDegree + (circleGraph.getAngleDegree()))); // use radian
-				preDegree = preDegree + circleGraph.getAngleDegree();
-				PointF rotateDot = getLineRotatePoint(dot, radAngle);
-				canvas.drawLine(chartCenter.x, chartCenter.y, rotateDot.x, rotateDot.y, linePaint);
+				float preDegree =0;
+
+				for (CircleGraph circleGraph : circleGraphList) {
+					Paint linePaint = setLinePaint(mCircleGraphVO.getLineColor());
+
+					float radAngle = (float) (Converter.DegreeToRadian((float) preDegree + (circleGraph.getAngleDegree()))); // use radian
+					preDegree = preDegree + circleGraph.getAngleDegree();
+					PointF rotateDot = getLineRotatePoint(dot, radAngle);
+					canvas.drawLine(chartCenter.x, chartCenter.y, rotateDot.x, rotateDot.y, linePaint);
+				}
 			}
 		}
-		
+
 		private String changeRateText(float rate){
 
 			if(String.valueOf(rate).substring(3,4).equals("0")){
@@ -304,7 +376,7 @@ public class CircleGraphView extends SurfaceView implements Callback{
 			rotateDot.y = (float) (chartCenter.y + radius/1.4 *Math.sin(radAngle) + rect.height()/2);
 			return rotateDot;
 		}
-		
+
 		private PointF getLineRotatePoint(PointF dot, float radAngle) {
 			PointF rotateDot = new PointF();
 			rotateDot.x = (float) (chartCenter.x + radius *Math.cos(radAngle));
@@ -367,7 +439,7 @@ public class CircleGraphView extends SurfaceView implements Callback{
 			paint.setTextSize(textSize);
 			return paint;
 		}
-		
+
 		private Paint setLinePaint(int color) {
 			Paint paint = new Paint();
 			paint.setFlags(Paint.ANTI_ALIAS_FLAG);
@@ -380,7 +452,7 @@ public class CircleGraphView extends SurfaceView implements Callback{
 
 		private float calculateDataTotal(List<CircleGraph> circleGraphList) {  
 			float total = 0;  
-			
+
 			for (CircleGraph circleGraph : circleGraphList) {
 				total += circleGraph.getAngleArr();
 			}
@@ -390,7 +462,7 @@ public class CircleGraphView extends SurfaceView implements Callback{
 		private List<CircleGraph> calculateData(List<CircleGraph> circleGraphList) {  
 			float total = 0;  
 			total = calculateDataTotal(circleGraphList);
-			
+
 			for (CircleGraph circleGraph : circleGraphList) {
 				circleGraph.setAngleDegree((360 * (circleGraph.getAngleArr() / total)));
 			}
@@ -421,7 +493,7 @@ public class CircleGraphView extends SurfaceView implements Callback{
 				nameRextPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
 				nameRextPaint.setAntiAlias(true); //text anti alias
 				nameRextPaint.setFilterBitmap(true); // bitmap anti alias
-				nameRextPaint.setColor(Color.BLUE);
+				nameRextPaint.setColor(gnb.getNameboxColor());
 				nameRextPaint.setStrokeWidth(3);
 				nameRextPaint.setStyle(Style.STROKE);
 
@@ -438,7 +510,7 @@ public class CircleGraphView extends SurfaceView implements Callback{
 				pNameText.setFlags(Paint.ANTI_ALIAS_FLAG);
 				pNameText.setAntiAlias(true); //text anti alias
 				pNameText.setTextSize(nameboxTextSize);
-				pNameText.setColor(Color.BLACK); 
+				pNameText.setColor(gnb.getNameboxTextColor()); 
 
 
 				int graphSize = mCircleGraphVO.getArrGraph().size();

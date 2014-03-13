@@ -36,6 +36,10 @@ public class MainActivity extends Activity {
 			startActivity(RadarGraphActivity.class);
 			break;
 			
+		case R.id.btnPieGraph:
+			startActivity(PieGraphActivity.class);
+			break;
+			
 		default:
 			break;
 		}
