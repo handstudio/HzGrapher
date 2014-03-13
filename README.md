@@ -24,7 +24,7 @@ Function
 ![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/PieChart.png)
 
 + Curve Graph
-![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/CurveGraph.png)
+![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/CruveGraph.png)
 
 + Curve Graph with Region
 ![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/CurveGraph with Region.png)
