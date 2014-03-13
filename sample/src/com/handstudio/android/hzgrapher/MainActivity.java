@@ -28,6 +28,10 @@ public class MainActivity extends Activity {
 			startActivity(LineCompareGraphActivity.class);
 			break;
 			
+		case R.id.btnCircleGraph:
+			startActivity(CircleGraphActivity.class);
+			break;
+
 		case R.id.btnRadarGraph:
 			startActivity(RadarGraphActivity.class);
 			break;
@@ -42,6 +46,9 @@ public class MainActivity extends Activity {
 			
 		case R.id.btnCurveCompareGraph:
 			startActivity(CurveCompareGraphActivity.class);
+			
+		case R.id.btnPieGraph:
+			startActivity(PieGraphActivity.class);
 			break;
 			
 		default:

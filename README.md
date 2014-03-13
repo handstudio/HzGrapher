@@ -17,6 +17,12 @@ Function
 + Radar Graph
 ![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/RadarGraph.png)
 
++ Circle Graph
+![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/CircleGraph.png)
+
++ Pie Graph
+![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/PieChart.png)
+
 Feature
 -------
 + easy to customize
