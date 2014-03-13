@@ -23,6 +23,15 @@ Function
 + Pie Graph
 ![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/PieChart.png)
 
++ CruveGraph
+![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/CruveGraph.png)
+
++ CurveGraph with Region
+![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/CurveGraph with Region.png)
+
++ CurveCompareGraph
+![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/CurveCompareGraph.png)
+
 Feature
 -------
 + easy to customize
