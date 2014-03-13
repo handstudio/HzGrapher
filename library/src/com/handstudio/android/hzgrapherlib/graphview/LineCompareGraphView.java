@@ -30,7 +30,7 @@ import com.handstudio.android.hzgrapherlib.path.GraphPath;
 import com.handstudio.android.hzgrapherlib.vo.GraphNameBox;
 import com.handstudio.android.hzgrapherlib.vo.linegraph.LineGraphVO;
 
-public class LineComapreGraphView extends SurfaceView implements Callback{
+public class LineCompareGraphView extends SurfaceView implements Callback{
 
 	public static final String TAG = "LineComapreGraphView";
 	private SurfaceHolder mHolder;
@@ -40,18 +40,18 @@ public class LineComapreGraphView extends SurfaceView implements Callback{
 	
 	
 	//Constructor
-	public LineComapreGraphView(Context context, LineGraphVO vo) {
+	public LineCompareGraphView(Context context, LineGraphVO vo) {
 		super(context);
 		mLineGraphVO = vo;
 		initView(context, vo);
 	}
 	
-	public LineComapreGraphView(Context context, AttributeSet attrs) {
+	public LineCompareGraphView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		initView(context, attrs, 0);
 	}
 	
-	public LineComapreGraphView(Context context, AttributeSet attrs, int defStyle) {
+	public LineCompareGraphView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs);
 		initView(context, attrs, defStyle);
 	}

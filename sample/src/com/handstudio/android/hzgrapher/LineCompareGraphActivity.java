@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.view.ViewGroup;
 
 import com.handstudio.android.hzgrapherlib.animation.GraphAnimation;
-import com.handstudio.android.hzgrapherlib.graphview.LineComapreGraphView;
+import com.handstudio.android.hzgrapherlib.graphview.LineCompareGraphView;
 import com.handstudio.android.hzgrapherlib.vo.GraphNameBox;
 import com.handstudio.android.hzgrapherlib.vo.linegraph.LineGraph;
 import com.handstudio.android.hzgrapherlib.vo.linegraph.LineGraphVO;
@@ -36,7 +36,7 @@ public class LineCompareGraphActivity extends Activity {
 		//default setting
 //		LineGraphVO vo = makeLineCompareGraphDefaultSetting();
 		
-		layoutGraphView.addView(new LineComapreGraphView(this, vo));
+		layoutGraphView.addView(new LineCompareGraphView(this, vo));
 	}
 	
 	/**

@@ -10,6 +10,8 @@ import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -18,6 +20,8 @@ import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 
 import com.handstudio.android.hzgrapherlib.canvas.GraphCanvasWrapper;
+import com.handstudio.android.hzgrapherlib.util.EuclidLine;
+import com.handstudio.android.hzgrapherlib.util.EuclidPoint;
 import com.handstudio.android.hzgrapherlib.vo.GraphNameBox;
 import com.handstudio.android.hzgrapherlib.vo.bubblegraph.BubbleGraph;
 import com.handstudio.android.hzgrapherlib.vo.bubblegraph.BubbleGraphVO;
@@ -187,6 +191,7 @@ public class BubbleGraphView extends SurfaceView implements Callback
 			int i; int j;
 			
 			for ( i = 0 ; i < mCircleAnim.length ; i++ )
+				
 			{
 				mCircleAnim[i] = new CircleAnim[mVO.get(i).getSizeArr().length];
 				for ( j = 0 ; j < mCircleAnim[i].length ; j++ )
@@ -315,15 +320,45 @@ public class BubbleGraphView extends SurfaceView implements Callback
 				
 				for ( j = 0 ; j < coordsArr.length ; j++ )
 				{	
+					float rad = getPixelFromCircleRadius ( sizeArr[j] , width );
+					
+					float circleX = j*perX;
+					float circleY = (coordsArr[j]-minValue)*height / (maxValue-minValue);
+					
+					gcw.drawCircle ( circleX , circleY , rad , mPaintBubble );
+					
+					float startX = j*perX;
+					float startY = (coordsArr[j]-minValue)*height / (maxValue-minValue);
+					
 					if ( j < coordsArr.length - 1 )
 					{
-						gcw.drawLine( j*perX , (coordsArr[j]-minValue)*height / (maxValue-minValue) , 
-								(j+1)*perX , (coordsArr[j+1]-minValue)*height / (maxValue-minValue) , mPaintBubble );
+						float endX = (float)(j+1)*perX;
+						float endY = (coordsArr[j+1]-minValue)*height / (maxValue-minValue);
+						
+						/// Routine for erase overwrapped line -------
+						int color = mPaintBubble.getColor();
+						float strokeWidth = mPaintBubble.getStrokeWidth();
+						
+						mPaintBubble.setColor(Color.WHITE);
+						mPaintBubble.setStrokeWidth(strokeWidth);
+						//mPaintBubble.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
+						
+						EuclidLine l = 
+								new EuclidLine ( new EuclidPoint ( circleX , circleY ) ,
+													new EuclidPoint ( endX , endY ) );
+					 	EuclidPoint pt = l.getPointOfLine(true, rad);
+						gcw.drawLine( circleX , circleY , pt.getX() , pt.getY() , mPaintBubble );
+						
+						mPaintBubble.setXfermode(null);
+						mPaintBubble.setColor(color);
+						mPaintBubble.setStrokeWidth(strokeWidth);
+						/// ------------ Routine end
+						
+						// draw line actually
+						gcw.drawLine( startX , startY , endX , endY , mPaintBubble );
 					}
 					
-					float rad = getPixelFromCircleRadius ( sizeArr[j] , width );
-					float y = (coordsArr[j]-minValue)*height / (maxValue-minValue);
-					gcw.drawCircle ( j*perX , y , rad , mPaintBubble );
+					
 				}
 			}
 		}
@@ -348,6 +383,8 @@ public class BubbleGraphView extends SurfaceView implements Callback
 				gcw.drawLine(0.0f, yPos , width, yPos , mPaintGuideLine);
 			}
 		}
+		
+		
 		
 		private void drawGraphName(Canvas canvas, int width , int height) 
 		{
