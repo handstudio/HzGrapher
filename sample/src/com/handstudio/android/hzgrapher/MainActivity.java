@@ -32,6 +32,18 @@ public class MainActivity extends Activity {
 			startActivity(RadarGraphActivity.class);
 			break;
 			
+		case R.id.btnCurveGraph:
+			startActivity(CurveGraphActivity.class);
+			break;
+			
+		case R.id.btnCurveGraphWithRegion:
+			startActivity(CurveGraphWithRegionActivity.class);
+			break;
+			
+		case R.id.btnCurveCompareGraph:
+			startActivity(CurveCompareGraphActivity.class);
+			break;
+			
 		default:
 			break;
 		}
