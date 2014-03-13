@@ -46,6 +46,7 @@ public class MainActivity extends Activity {
 			
 		case R.id.btnCurveCompareGraph:
 			startActivity(CurveCompareGraphActivity.class);
+			break;
 			
 		case R.id.btnPieGraph:
 			startActivity(PieGraphActivity.class);
