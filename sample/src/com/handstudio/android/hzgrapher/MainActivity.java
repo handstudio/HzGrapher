@@ -36,6 +36,10 @@ public class MainActivity extends Activity {
 			startActivity(RadarGraphActivity.class);
 			break;
 			
+		case R.id.btnBubbleGraph:
+			startActivity(BubbleGraphActivity.class);
+			break;
+			
 		default:
 			break;
 		}
