@@ -20,6 +20,9 @@ Function
 + Circle Graph
 ![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/CircleGraph.png)
 
++ Pie Graph
+![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/PieGraph.png)
+
 Feature
 -------
 + easy to customize
