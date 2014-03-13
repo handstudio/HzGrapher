@@ -39,6 +39,7 @@ public class BubbleGraphActivity extends Activity
 		//ret.setGraphBG(R.drawable.back);
 		ret.setAnimationDuration(1000);
 		ret.setIsLineShow(true);
+		ret.setIsAnimaionShow(true);
 		
 		float[] coordArr = {20.0f , 35.0f , 50.0f , 104.0f , 50.0f};
 		float[] sizeArr = {20.0f , 15.0f , 20.0f , 25.0f , 30.0f}; 

@@ -9,10 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
 import android.graphics.Paint.Style;
-import android.graphics.PorterDuff.Mode;
-import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -102,13 +99,84 @@ public class BubbleGraphView extends SurfaceView implements Callback
 		private Paint			mPaintGuideLine = null;
 		private Paint			mPaintAxisMarker = null;
 		private Paint 			mPaintAxisText = null;
-		private Paint 			mPaintBitmap = null;
 		
 		public DrawThread ( SurfaceHolder holder , BubbleGraphVO vo , Context ctx )
 		{
 			mCtx = ctx;
 			mHolder = holder;
 			mVO = vo;
+		}
+
+		@Override
+		public void run ()
+		{	
+			Canvas canvas = null;
+			GraphCanvasWrapper gcw = null;
+			float horizontalThreshold = 0.0f;
+			
+			initCircleAnimation ();
+			initPaints ();
+			
+			int width = getWidth();
+			int height = getHeight();
+			
+			//chart length
+			int chartXLength = width - (mVO.getPaddingLeft() + mVO.getPaddingRight());
+			int chartYLength = height - (mVO.getPaddingBottom() + mVO.getPaddingTop());
+			long startTick = Calendar.getInstance().getTimeInMillis();
+			
+			Bitmap bitBackground = null;
+			Bitmap bitTemp = null;
+			if ( mVO.getGraphBG() != -1 )
+			{
+				bitTemp = BitmapFactory.decodeResource ( mCtx.getResources(), mVO.getGraphBG() );
+				bitBackground = Bitmap.createScaledBitmap( bitTemp , width , height , true);
+			}
+			
+			while ( true )
+			{
+				if ( mIsRun == false ) { break; }
+				
+				canvas = mHolder.lockCanvas();
+				if ( canvas == null ) { continue; }
+				gcw = new GraphCanvasWrapper ( canvas , width , height , mVO.getPaddingLeft() , mVO.getPaddingBottom() );
+				
+				try
+				{
+					synchronized ( mHolder )
+					{
+						if ( bitBackground == null ) { canvas.drawColor(Color.WHITE); }
+						else { canvas.drawBitmap(bitBackground, 0, 0 , null); }
+						
+						drawBaseline ( gcw , chartXLength , chartYLength );
+						
+						if ( mVO.isAnimationShow() == true )
+						{
+							drawGraphWithAnimation ( gcw , chartXLength , chartYLength , horizontalThreshold );
+						}
+						else 
+						{
+							drawGraphWithoutAnimation ( gcw , chartXLength , chartYLength );
+						}
+						
+						drawAxisMark ( gcw , chartXLength , chartYLength );
+						drawAxisValue ( gcw , chartXLength , chartYLength );
+						drawAxisLine ( gcw , chartXLength , chartYLength );
+						drawGraphName ( gcw.getCanvas() , width , height );
+					}
+				}
+				finally
+				{
+					if ( canvas != null )
+					{
+						mHolder.unlockCanvasAndPost(canvas);
+					}
+				}
+				
+				long difference = Calendar.getInstance().getTimeInMillis() - startTick;
+				horizontalThreshold = ((float)mVO.get(0).getCoordinateArr().length / 
+										(float)mVO.getAnimationDuration())*(float)difference;
+			}
 		}
 		
 		public void setRunFlag ( boolean isRun ) { mIsRun = isRun; }
@@ -163,8 +231,6 @@ public class BubbleGraphView extends SurfaceView implements Callback
 			mPaintAxisText.setFlags(Paint.ANTI_ALIAS_FLAG);
 			mPaintAxisText.setAntiAlias(true);
 			mPaintAxisText.setColor(Color.rgb(30, 30, 30));
-			
-			mPaintBitmap = new Paint ();
 		}
 		
 		private boolean drawGraphWithAnimation ( GraphCanvasWrapper gcw , int width , int height , float threshold )
@@ -178,7 +244,6 @@ public class BubbleGraphView extends SurfaceView implements Callback
 				float minValue = mVO.getMinCoordinate();
 				
 				mPaintBubble.setColor(bg.getColor());
-				//mPaintBubble.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DARKEN));
 				mPaintBubble.setAlpha(150);
 				
 				float perX = (float)width/(float)coordsArr.length;				
@@ -195,8 +260,10 @@ public class BubbleGraphView extends SurfaceView implements Callback
 				
 				if ( curIdx < coordsArr.length )
 				{
+					float rad = getPixelFromCircleRadius ( mCircleAnim[i][curIdx].mCurrent , width );
 					gcw.drawCircle ( curIdx*perX , (coordsArr[curIdx]-minValue)*height / (maxValue-minValue) , 
-						 	mCircleAnim[i][curIdx].mCurrent , mPaintBubble );
+						 	rad , mPaintBubble );
+					
 					if ( mCircleAnim[i][curIdx].mCurrent <= mCircleAnim[i][curIdx].mMax )
 					{
 						 mCircleAnim[i][curIdx].mCurrent += 1.0f;
@@ -214,8 +281,8 @@ public class BubbleGraphView extends SurfaceView implements Callback
 					
 					if ( j < coordsArr.length )
 					{
-						gcw.drawCircle ( j*perX , (coordsArr[j]-minValue)*height / (maxValue-minValue) , 
-							 	mCircleAnim[i][j].mCurrent , mPaintBubble );
+						float rad = getPixelFromCircleRadius ( mCircleAnim[i][j].mCurrent , width );
+						gcw.drawCircle ( j*perX , (coordsArr[j]-minValue)*height / (maxValue-minValue) , rad , mPaintBubble );
 			
 						if ( mCircleAnim[i][j].mCurrent <= mCircleAnim[i][j].mMax )
 						{
@@ -241,6 +308,7 @@ public class BubbleGraphView extends SurfaceView implements Callback
 				float minValue = mVO.getMinCoordinate();
 				
 				mPaintBubble.setColor(bg.getColor());
+				mPaintBubble.setAlpha(150);
 				
 				float perX = (float)width/(float)coordsArr.length;
 				if ( coordsArr.length != sizeArr.length ) { continue; }
@@ -253,10 +321,18 @@ public class BubbleGraphView extends SurfaceView implements Callback
 								(j+1)*perX , (coordsArr[j+1]-minValue)*height / (maxValue-minValue) , mPaintBubble );
 					}
 					
+					float rad = getPixelFromCircleRadius ( sizeArr[j] , width );
 					float y = (coordsArr[j]-minValue)*height / (maxValue-minValue);
-					gcw.drawCircle ( j*perX , y , sizeArr[j] , mPaintBubble );
+					gcw.drawCircle ( j*perX , y , rad , mPaintBubble );
 				}
 			}
+		}
+		
+		private float getPixelFromCircleRadius ( float rad , int width )
+		{
+			float ret = 0.0f;
+			ret = ((rad*((float)width/(float)mVO.get(0).getCoordinateArr().length)) / mVO.getMaxSize())/(float)2; 
+			return ret;
 		}
 		
 		private void drawBaseline ( GraphCanvasWrapper gcw , int width , int height )
@@ -426,72 +502,6 @@ public class BubbleGraphView extends SurfaceView implements Callback
 		{
 			gcw.drawLine(0.0f, 0.0f, width, 0.0f, mPaintAxisLine);
 			gcw.drawLine(0.0f, 0.0f, 0.0f, height, mPaintAxisLine);
-		}
-		
-		@Override
-		public void run ()
-		{	
-			Canvas canvas = null;
-			GraphCanvasWrapper gcw = null;
-			float horizontalThreshold = 0.0f;
-			
-			initCircleAnimation ();
-			initPaints ();
-			
-			int width = getWidth();
-			int height = getHeight();
-			
-			//chart length
-			int chartXLength = width - (mVO.getPaddingLeft() + mVO.getPaddingRight());
-			int chartYLength = height - (mVO.getPaddingBottom() + mVO.getPaddingTop());
-			long startTick = Calendar.getInstance().getTimeInMillis();
-			
-			Bitmap bitBackground = null;
-			Bitmap bitTemp = null;
-			if ( mVO.getGraphBG() != -1 )
-			{
-				bitTemp = BitmapFactory.decodeResource ( mCtx.getResources(), mVO.getGraphBG() );
-				bitBackground = Bitmap.createScaledBitmap( bitTemp , width , height , true);
-			}
-			
-			while ( true )
-			{
-				if ( mIsRun == false ) { break; }
-				
-				canvas = mHolder.lockCanvas();
-				if ( canvas == null ) { continue; }
-				gcw = new GraphCanvasWrapper ( canvas , width , height , mVO.getPaddingLeft() , mVO.getPaddingBottom() );
-				
-				try
-				{
-					synchronized ( mHolder )
-					{
-						if ( bitBackground == null ) { canvas.drawColor(Color.WHITE); }
-						else { canvas.drawBitmap(bitBackground, 0, 0 , null); }
-						
-						drawBaseline ( gcw , chartXLength , chartYLength );
-						
-						//drawGraphWithoutAnimation ( gcw , chartXLength , chartYLength );
-						drawGraphWithAnimation ( gcw , chartXLength , chartYLength , horizontalThreshold );
-						
-						drawAxisMark ( gcw , chartXLength , chartYLength );
-						drawAxisValue ( gcw , chartXLength , chartYLength );
-						drawAxisLine ( gcw , chartXLength , chartYLength );
-						drawGraphName ( gcw.getCanvas() , width , height );
-					}
-				}
-				finally
-				{
-					if ( canvas != null )
-					{
-						mHolder.unlockCanvasAndPost(canvas);
-					}
-				}
-				
-				long difference = Calendar.getInstance().getTimeInMillis() - startTick;
-				horizontalThreshold = ((float)mVO.get(0).getCoordinateArr().length / 
-										(float)mVO.getAnimationDuration())*(float)difference;
-			}
 		}
 	}
 }

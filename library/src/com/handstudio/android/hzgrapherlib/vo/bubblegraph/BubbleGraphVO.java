@@ -14,12 +14,14 @@ public class BubbleGraphVO extends Graph
 	private int 					totalItemCount = 0;
 	private float 					maxValue = 0.0f;
 	private float 					minValue = Float.MAX_VALUE;
+	private float 					maxSizeValue = 0.0f;
 	private int 					increment;
 	
 	private int 					graphBG = -1;
 	private long 					animationDuration = 2000;
 	
 	private boolean 				isLineShow = true;
+	private boolean					isAnimaionShow = true;
 	
 	public BubbleGraphVO ( String[] legendArr )
 	{
@@ -34,9 +36,13 @@ public class BubbleGraphVO extends Graph
 		int i;
 		for ( i = 0 ; i < bg.getCoordinateArr().length ; i++ )
 		{
-			float v = bg.getCoordinateArr()[i]; 
+			float v = bg.getCoordinateArr()[i];
+			float s = bg.getSizeArr()[i];
+			
 			if ( v < this.minValue ) { this.minValue = v; }
 			if ( v > this.maxValue ) { this.maxValue = v; }
+			
+			if ( s > this.maxSizeValue ) { this.maxSizeValue = s; }
 		}
 		this.totalItemCount += bg.getCoordinateArr().length;
 	}
@@ -61,9 +67,13 @@ public class BubbleGraphVO extends Graph
 	public boolean isLineShow () { return this.isLineShow; }
 	public void setIsLineShow ( boolean isLineShow ) { this.isLineShow = isLineShow; }
 	
+	public boolean isAnimationShow () { return this.isAnimaionShow; }
+	public void setIsAnimaionShow ( boolean isShow ) { this.isAnimaionShow = isShow; }
+	
 	public int getTotalCountOfItem () { return this.totalItemCount; }
 	public float getMaxCoordinate () { return this.maxValue; }
 	public float getMinCoordinate () { return this.minValue; }
+	public float getMaxSize () { return this.maxSizeValue; }
 	
 	public String[] getLegendArr () { return this.legendArr; }
 	public void setLegendArr ( String[] legendArr ) { this.legendArr = legendArr; }
