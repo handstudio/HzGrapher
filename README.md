@@ -21,7 +21,7 @@ Function
 ![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/CircleGraph.png)
 
 + Pie Graph
-![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/PieChart.png)
+![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/PieGraph.png)
 
 + Curve Graph
 ![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/CruveGraph.png)
