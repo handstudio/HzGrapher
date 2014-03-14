@@ -24,31 +24,18 @@ public class EuclidLine
 	public EuclidPoint getPointOfLine ( boolean startFromPt1 , float distance )
 	{
 		EuclidPoint ptRet = null;
-		if ( startFromPt1 == true ) 
-		{
-			double dx = mPt2.getX() - mPt1.getX();
-			double dy = mPt2.getY() - mPt1.getY();
-			
-			double theta = Math.atan ( dy / dx );
-			
-			double x = (double)mPt1.getX() + ((double)distance * Math.cos( theta ));
-			double y = (double)mPt1.getY() + ((double)distance * Math.sin( theta ));
-			
-			ptRet = new EuclidPoint ( (float)x , (float)y );
-		}
-		else
-		{
-			double dx = mPt1.getX() - mPt2.getX();
-			double dy = mPt1.getY() - mPt2.getY();
-			
-			double theta = Math.atan ( dy / dx );
-			
-			double x = (double)mPt1.getX() + ((double)distance * Math.cos( theta ));
-			double y = (double)mPt1.getY() + ((double)distance * Math.sin( theta ));
-			
-			ptRet = new EuclidPoint ( (float)x , (float)y );
-		}
+		double dx = mPt2.getX() - mPt1.getX();
+		double dy = mPt2.getY() - mPt1.getY();
 		
+		double theta = 0;
+		if ( startFromPt1 == true ) { theta = Math.atan(dy/dx) + Converter.DegreeToRadian(180.0f); }
+		else { theta = Math.atan ( dy / dx ); }
+		
+		double x = (double)mPt1.getX() + ((double)distance * Math.cos( theta ));
+		double y = (double)mPt1.getY() + ((double)distance * Math.sin( theta ));
+		
+		ptRet = new EuclidPoint ( (float)x , (float)y );
+				
 		return ptRet;
 	}
 }

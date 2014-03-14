@@ -1,13 +1,8 @@
 package com.handstudio.android.hzgrapher;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.Activity;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ViewGroup;
 
 import com.handstudio.android.hzgrapherlib.graphview.BubbleGraphView;
@@ -40,7 +35,7 @@ public class BubbleGraphActivity extends Activity
 		ret.setAnimationDuration(1000);
 		
 		ret.setIsLineShow(true);
-		ret.setIsAnimaionShow(false);
+		ret.setIsAnimaionShow(true);
 		
 		float[] coordArr = {20.0f , 35.0f , 50.0f , 104.0f , 50.0f};
 		float[] sizeArr = {20.0f , 15.0f , 20.0f , 25.0f , 30.0f}; 

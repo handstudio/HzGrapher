@@ -10,8 +10,6 @@ import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -92,17 +90,19 @@ public class BubbleGraphView extends SurfaceView implements Callback
 			public float mMax = 0.0f;
 		}
 		
-		private Context 		mCtx = null;
-		private SurfaceHolder 	mHolder = null;
-		private BubbleGraphVO 	mVO = null;
-		private boolean 		mIsRun = true;
-		private CircleAnim[][] 	mCircleAnim = null;
+		private Context 			mCtx = null;
+		private SurfaceHolder 		mHolder = null;
+		private BubbleGraphVO 		mVO = null;
+		private boolean 			mIsRun = true;
+		private CircleAnim[][] 		mCircleAnim = null;
 		
-		private Paint 			mPaintBubble = null;
-		private Paint 			mPaintAxisLine = null;
-		private Paint			mPaintGuideLine = null;
-		private Paint			mPaintAxisMarker = null;
-		private Paint 			mPaintAxisText = null;
+		private EuclidPoint[][][]	mCircleOuterPoint = null;
+		
+		private Paint 				mPaintBubble = null;
+		private Paint 				mPaintAxisLine = null;
+		private Paint				mPaintGuideLine = null;
+		private Paint				mPaintAxisMarker = null;
+		private Paint 				mPaintAxisText = null;
 		
 		public DrawThread ( SurfaceHolder holder , BubbleGraphVO vo , Context ctx )
 		{
@@ -127,6 +127,9 @@ public class BubbleGraphView extends SurfaceView implements Callback
 			//chart length
 			int chartXLength = width - (mVO.getPaddingLeft() + mVO.getPaddingRight());
 			int chartYLength = height - (mVO.getPaddingBottom() + mVO.getPaddingTop());
+			
+			initClosePoints ( chartXLength , chartYLength );	
+			
 			long startTick = Calendar.getInstance().getTimeInMillis();
 			
 			Bitmap bitBackground = null;
@@ -185,6 +188,84 @@ public class BubbleGraphView extends SurfaceView implements Callback
 		
 		public void setRunFlag ( boolean isRun ) { mIsRun = isRun; }
 		
+		private void initClosePoints ( int width , int height )
+		{
+			int graphCount = mVO.size();
+			int legendCount = mVO.getLegendArr().length;
+			
+			mCircleOuterPoint = new EuclidPoint[graphCount][][];
+			
+			float perX = (float)width/(float)mVO.getLegendArr().length;
+			float maxValue = mVO.getMaxCoordinate();
+			float minValue = mVO.getMinCoordinate();
+			
+			int i; int j;
+			for ( i = 0 ; i < graphCount ; i++ )
+			{	
+				mCircleOuterPoint[i] = new EuclidPoint[legendCount][];
+				
+				float[] coordsArr = mVO.get(i).getCoordinateArr();
+				float[] sizeArr = mVO.get(i).getSizeArr();
+				
+				for ( j = 0 ; j < legendCount ; j++ )
+				{
+					mCircleOuterPoint[i][j] = new EuclidPoint[2];
+					mCircleOuterPoint[i][j][0] = null;
+					mCircleOuterPoint[i][j][1] = null;
+					
+					float rad = getPixelFromCircleRadius ( sizeArr[j] , width );
+					float circleX = (float)j*perX;
+					float circleY = (coordsArr[j]-minValue)*(float)height / (maxValue-minValue);
+					
+					if ( j > 0 )
+					{
+						float prevX = (float)(j-1) * perX;
+						float prevY = (float)(coordsArr[j-1]-minValue)*(float)height / (maxValue-minValue);
+						
+						EuclidPoint pt = 
+								new EuclidLine ( new EuclidPoint ( circleX , circleY ) , 
+													new EuclidPoint ( prevX , prevY ) ).getPointOfLine(true, rad);
+						mCircleOuterPoint[i][j][0] = new EuclidPoint ( pt.getX() , pt.getY() );
+					}
+					
+					if ( j < legendCount - 1 )
+					{
+						float nextX = (float)(j+1) * perX;
+						float nextY = (coordsArr[j+1]-minValue)*(float)height / (maxValue-minValue);
+						
+						EuclidPoint pt = 
+								new EuclidLine ( new EuclidPoint ( circleX , circleY ) , 
+													new EuclidPoint ( nextX , nextY ) ).getPointOfLine(false, rad);
+						mCircleOuterPoint[i][j][1] = new EuclidPoint ( pt.getX() , pt.getY() ); 
+					}
+				}
+				
+				if ( i == 0 ) 
+				{
+					for ( j = 0 ; j < legendCount ; j++ )
+					{
+						String expr = ""; 
+						EuclidPoint ptPrev = mCircleOuterPoint[i][j][0];
+						EuclidPoint ptNext = mCircleOuterPoint[i][j][1];
+						
+						if ( ptPrev == null ) { expr += "PREV:NULL\n"; }
+						else 
+						{
+							expr += "PREV:X:" + Float.toString(ptPrev.getX()) + "/" + "Y:" + Float.toString(ptPrev.getY()) + "\n";
+						}
+						
+						if ( ptNext == null ) { expr += "NEXT:NULL\n"; }
+						else 
+						{
+							expr += "NEXT:X:" + Float.toString(ptNext.getX()) + "/" + "Y:" + Float.toString(ptNext.getY()) + "\n";
+						}
+						
+						Log.i(TAG , expr);
+					}
+				}
+			}
+		}
+		
 		private void initCircleAnimation ()
 		{
 			mCircleAnim = new CircleAnim [mVO.size()][];
@@ -211,8 +292,6 @@ public class BubbleGraphView extends SurfaceView implements Callback
 			mPaintBubble.setColor(Color.GRAY);
 			mPaintBubble.setStrokeWidth(3.0f);
 			mPaintBubble.setAlpha((int)(256*(1-50)));
-			//mPaintBubble.setXfermode(new PorterDuffXfermode(Mode.ADD));
-			//mPaintBubble.setXfermode(new Xfer)
 			
 			mPaintAxisLine = new Paint ();
 			mPaintAxisLine.setFlags(Paint.ANTI_ALIAS_FLAG);
@@ -275,11 +354,26 @@ public class BubbleGraphView extends SurfaceView implements Callback
 					}
 				}
 				
+				
+				int loopLimit = curIdx;
+				if ( curIdx >= coordsArr.length ) { loopLimit = coordsArr.length; }
+				
 				// draw prev animated line
-				for ( j = 0 ; j < curIdx ; j++ )
+				for ( j = 0 ; j < loopLimit ; j++ )
 				{
-					if ( j < coordsArr.length-1 && mVO.isLineShow() == true )
+					if ( loopLimit == coordsArr.length && j < coordsArr.length-1 )
 					{
+						EuclidPoint ptPrev = mCircleOuterPoint[i][j][1];
+						EuclidPoint ptNext = mCircleOuterPoint[i][j+1][0];
+						
+						if ( ptPrev != null && ptNext != null )
+						{
+							gcw.drawLine( ptPrev.getX() , ptPrev.getY() , ptNext.getX() , ptNext.getY() , mPaintBubble );
+						}
+					}
+					
+					else if ( j < coordsArr.length-1 && mVO.isLineShow() == true )
+					{	
 						gcw.drawLine( j*perX , (coordsArr[j]-minValue)*height / (maxValue-minValue) , 
 								(j+1)*perX , (coordsArr[j+1]-minValue)*height / (maxValue-minValue) , mPaintBubble );
 					}
@@ -327,38 +421,16 @@ public class BubbleGraphView extends SurfaceView implements Callback
 					
 					gcw.drawCircle ( circleX , circleY , rad , mPaintBubble );
 					
-					float startX = j*perX;
-					float startY = (coordsArr[j]-minValue)*height / (maxValue-minValue);
-					
 					if ( j < coordsArr.length - 1 )
 					{
-						float endX = (float)(j+1)*perX;
-						float endY = (coordsArr[j+1]-minValue)*height / (maxValue-minValue);
+						EuclidPoint ptPrev = mCircleOuterPoint[i][j][1];
+						EuclidPoint ptNext = mCircleOuterPoint[i][j+1][0];
 						
-						/// Routine for erase overwrapped line -------
-						int color = mPaintBubble.getColor();
-						float strokeWidth = mPaintBubble.getStrokeWidth();
-						
-						mPaintBubble.setColor(Color.WHITE);
-						mPaintBubble.setStrokeWidth(strokeWidth);
-						//mPaintBubble.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
-						
-						EuclidLine l = 
-								new EuclidLine ( new EuclidPoint ( circleX , circleY ) ,
-													new EuclidPoint ( endX , endY ) );
-					 	EuclidPoint pt = l.getPointOfLine(true, rad);
-						gcw.drawLine( circleX , circleY , pt.getX() , pt.getY() , mPaintBubble );
-						
-						mPaintBubble.setXfermode(null);
-						mPaintBubble.setColor(color);
-						mPaintBubble.setStrokeWidth(strokeWidth);
-						/// ------------ Routine end
-						
-						// draw line actually
-						gcw.drawLine( startX , startY , endX , endY , mPaintBubble );
+						if ( ptPrev != null && ptNext != null )
+						{
+							gcw.drawLine( ptPrev.getX() , ptPrev.getY() , ptNext.getX() , ptNext.getY() , mPaintBubble );
+						}
 					}
-					
-					
 				}
 			}
 		}
