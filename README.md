@@ -23,15 +23,6 @@ Function
 + Pie Graph
 ![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/PieChart.png)
 
-<<<<<<< HEAD
-+ CruveGraph
-![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/CruveGraph.png)
-
-+ CurveGraph with Region
-![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/CurveGraph with Region.png)
-
-+ CurveCompareGraph
-=======
 + Curve Graph
 ![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/CruveGraph.png)
 
@@ -39,8 +30,10 @@ Function
 ![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/CurveGraph with Region.png)
 
 + Curve Compare Graph
->>>>>>> feature/HzCurveGraph_JW
 ![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/CurveCompareGraph.png)
+
++ Bubble Graph
+![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/BubbleGraph.png)
 
 Feature
 -------
