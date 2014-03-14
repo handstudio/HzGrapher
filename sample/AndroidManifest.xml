@@ -22,29 +22,27 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
         <activity
             android:name="com.handstudio.android.hzgrapher.LineGraphActivity"
             android:label="@string/app_name" >
         </activity>
-        
         <activity
             android:name="com.handstudio.android.hzgrapher.LineGraphWithRegionActivity"
             android:label="@string/app_name" >
         </activity>
-        
         <activity
             android:name="com.handstudio.android.hzgrapher.LineCompareGraphActivity"
             android:label="@string/app_name" >
         </activity>
-        <activity android:name="com.handstudio.android.hzgrapher.CircleGraphActivity"></activity>
-        
+        <activity android:name="com.handstudio.android.hzgrapher.CircleGraphActivity" >
+        </activity>
+        <activity android:name="com.handstudio.android.hzgrapher.PieGraphActivity" >
+        </activity>
         <activity
             android:name="com.handstudio.android.hzgrapher.RadarGraphActivity"
             android:label="@string/app_name" >
         </activity>
         <activity android:name="com.handstudio.android.hzgrapher.BubbleGraphActivity"></activity>
-        
     </application>
 
 </manifest>

@@ -22,6 +22,7 @@ public class CircleGraphVO extends Graph{
 	private GraphAnimation 	animation 			= null;
 	private List<CircleGraph> 	arrGraph 			= null;
 	private boolean 			isDrawRegion		= false;
+	private boolean 			isPieChart			= false;
 	
 	public CircleGraphVO(List<CircleGraph> arrGraph) {
 		super();
@@ -127,6 +128,14 @@ public class CircleGraphVO extends Graph{
 
 	public void setLineColor(int lineColor) {
 		this.lineColor = lineColor;
+	}
+
+	public boolean isPieChart() {
+		return isPieChart;
+	}
+
+	public void setPieChart(boolean isPieChart) {
+		this.isPieChart = isPieChart;
 	}
 	
 }

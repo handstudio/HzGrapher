@@ -39,6 +39,10 @@ public class MainActivity extends Activity {
 		case R.id.btnBubbleGraph:
 			startActivity(BubbleGraphActivity.class);
 			break;
+
+		case R.id.btnPieGraph:
+			startActivity(PieGraphActivity.class);
+			break;
 			
 		default:
 			break;
