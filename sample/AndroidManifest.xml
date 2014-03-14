@@ -42,6 +42,18 @@
             android:name="com.handstudio.android.hzgrapher.RadarGraphActivity"
             android:label="@string/app_name" >
         </activity>
+        <activity
+            android:name="com.handstudio.android.hzgrapher.CurveGraphActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name="com.handstudio.android.hzgrapher.CurveGraphWithRegionActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name="com.handstudio.android.hzgrapher.CurveCompareGraphActivity"
+            android:label="@string/app_name" >
+        </activity>
     </application>
 
 </manifest>
