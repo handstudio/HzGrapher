@@ -35,6 +35,9 @@ Function
 + Bubble Graph
 ![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/BubbleGraph.png)
 
++ Scatter Graph
+![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/ScatterGraph.png)
+
 Feature
 -------
 + easy to customize
