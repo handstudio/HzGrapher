@@ -5,7 +5,7 @@ android hz graph library
 
 Release
 -------
-v1.0.0 - https://github.com/handstudio/HzGrapher/tree/master/release/v1.0.0
+v1.0.0 - https://github.com/handstudio/HzGrapher/releases/tag/v1.0.0
 
 Function
 --------
