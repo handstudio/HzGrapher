@@ -3,6 +3,10 @@ HzGrapher
 
 android hz graph library
 
+Release
+-------
+v1.0.0 - https://github.com/handstudio/HzGrapher/tree/master/release/v1.0.0
+
 Function
 --------
 + Line Graph
