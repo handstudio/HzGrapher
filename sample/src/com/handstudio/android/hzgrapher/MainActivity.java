@@ -28,8 +28,36 @@ public class MainActivity extends Activity {
 			startActivity(LineCompareGraphActivity.class);
 			break;
 			
+		case R.id.btnCircleGraph:
+			startActivity(CircleGraphActivity.class);
+			break;
+
 		case R.id.btnRadarGraph:
 			startActivity(RadarGraphActivity.class);
+			break;
+			
+		case R.id.btnBubbleGraph:
+			startActivity(BubbleGraphActivity.class);
+			break;
+
+		case R.id.btnCurveGraph:
+			startActivity(CurveGraphActivity.class);
+			break;
+			
+		case R.id.btnCurveGraphWithRegion:
+			startActivity(CurveGraphWithRegionActivity.class);
+			break;
+			
+		case R.id.btnCurveCompareGraph:
+			startActivity(CurveCompareGraphActivity.class);
+			break;
+			
+		case R.id.btnPieGraph:
+			startActivity(PieGraphActivity.class);
+			break;
+			
+		case R.id.btnScatterGraph:
+			startActivity(ScatterGraphActivity.class);
 			break;
 			
 		default:

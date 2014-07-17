@@ -3,6 +3,10 @@ HzGrapher
 
 android hz graph library
 
+Release
+-------
+v1.0.0 - https://github.com/handstudio/HzGrapher/tree/master/release/v1.0.0
+
 Function
 --------
 + Line Graph
@@ -16,6 +20,27 @@ Function
 
 + Radar Graph
 ![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/RadarGraph.png)
+
++ Circle Graph
+![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/CircleGraph.png)
+
++ Pie Graph
+![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/PieGraph.png)
+
++ Curve Graph
+![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/CruveGraph.png)
+
++ Curve Graph with Region
+![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/CurveGraph with Region.png)
+
++ Curve Compare Graph
+![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/CurveCompareGraph.png)
+
++ Bubble Graph
+![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/BubbleGraph.png)
+
++ Scatter Graph
+![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/ScetterGraph.png)
 
 Feature
 -------

@@ -32,7 +32,7 @@ import com.handstudio.android.hzgrapherlib.path.GraphPath;
 import com.handstudio.android.hzgrapherlib.vo.GraphNameBox;
 import com.handstudio.android.hzgrapherlib.vo.linegraph.LineGraphVO;
 
-public class LineComapreGraphView extends SurfaceView implements Callback{
+public class LineCompareGraphView extends SurfaceView implements Callback{
 
 	public static final String TAG = "LineComapreGraphView";
 	private SurfaceHolder mHolder;
@@ -42,18 +42,18 @@ public class LineComapreGraphView extends SurfaceView implements Callback{
 	
 	
 	//Constructor
-	public LineComapreGraphView(Context context, LineGraphVO vo) {
+	public LineCompareGraphView(Context context, LineGraphVO vo) {
 		super(context);
 		mLineGraphVO = vo;
 		initView(context, vo);
 	}
 	
-	public LineComapreGraphView(Context context, AttributeSet attrs) {
+	public LineCompareGraphView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		initView(context, attrs, 0);
 	}
 	
-	public LineComapreGraphView(Context context, AttributeSet attrs, int defStyle) {
+	public LineCompareGraphView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs);
 		initView(context, attrs, defStyle);
 	}
@@ -675,7 +675,7 @@ public class LineComapreGraphView extends SurfaceView implements Callback{
 				value = (int) (anim/1);
 				mode = anim %1;
 				
-				Log.e("", "value = " + value + "\t ,mode = " + mode);
+//				Log.e("", "value = " + value + "\t ,mode = " + mode);
 				
 				for (int j = 0; j <= value+1; j++) {
 					if(j < mLineGraphVO.getArrGraph().get(i).getCoordinateArr().length){
