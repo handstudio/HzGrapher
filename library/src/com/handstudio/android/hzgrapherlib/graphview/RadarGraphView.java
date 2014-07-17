@@ -47,16 +47,6 @@ public class RadarGraphView extends SurfaceView implements Callback{
 		initView(context, vo);
 	}
 	
-	public RadarGraphView(Context context, AttributeSet attrs) {
-		super(context, attrs);
-		initView(context, attrs, 0);
-	}
-	
-	public RadarGraphView(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs);
-		initView(context, attrs, defStyle);
-	}
-	
 	private void initView(Context context, RadarGraphVO vo) {
 		ErrorCode ec = ErrorDetector.checkGraphObject(vo);
 		ec.printError();
@@ -66,12 +56,6 @@ public class RadarGraphView extends SurfaceView implements Callback{
 		
 		fieldCount = vo.getArrGraph().get(0).getCoordinateArr().length;
 		baselineCount = vo.getMaxValue() / vo.getIncrement();
-	}
-	
-
-	private void initView(Context context, AttributeSet attrs, int defStyle) {
-		mHolder = getHolder();
-		mHolder.addCallback(this);
 	}
 
 	@Override

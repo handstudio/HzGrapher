@@ -44,16 +44,6 @@ public class LineGraphView extends SurfaceView implements Callback{
 		initView(context, vo);
 	}
 	
-	public LineGraphView(Context context, AttributeSet attrs) {
-		super(context, attrs);
-		initView(context, attrs, 0);
-	}
-	
-	public LineGraphView(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs);
-		initView(context, attrs, defStyle);
-	}
-	
 	private void initView(Context context, LineGraphVO vo) {
 		ErrorCode ec = ErrorDetector.checkGraphObject(vo);
 		ec.printError();
@@ -62,11 +52,6 @@ public class LineGraphView extends SurfaceView implements Callback{
 		mHolder.addCallback(this);
 	}
 	
-
-	private void initView(Context context, AttributeSet attrs, int defStyle) {
-		mHolder = getHolder();
-		mHolder.addCallback(this);
-	}
 
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,

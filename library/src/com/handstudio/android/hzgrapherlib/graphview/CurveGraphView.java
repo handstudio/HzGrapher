@@ -44,22 +44,7 @@ public class CurveGraphView extends SurfaceView implements Callback{
 		initView(context, vo);
 	}
 	
-	public CurveGraphView(Context context, AttributeSet attrs) {
-		super(context, attrs);
-		initView(context, attrs, 0);
-	}
-	
-	public CurveGraphView(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs);
-		initView(context, attrs, defStyle);
-	}
-	
 	private void initView(Context context, CurveGraphVO vo) {
-		mHolder = getHolder();
-		mHolder.addCallback(this);
-	}
-
-	private void initView(Context context, AttributeSet attrs, int defStyle) {
 		mHolder = getHolder();
 		mHolder.addCallback(this);
 	}

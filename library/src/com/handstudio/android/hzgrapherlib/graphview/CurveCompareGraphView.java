@@ -48,26 +48,11 @@ public class CurveCompareGraphView extends SurfaceView implements Callback{
 		initView(context, vo);
 	}
 	
-	public CurveCompareGraphView(Context context, AttributeSet attrs) {
-		super(context, attrs);
-		initView(context, attrs, 0);
-	}
-	
-	public CurveCompareGraphView(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs);
-		initView(context, attrs, defStyle);
-	}
-	
 	private void initView(Context context, CurveGraphVO vo) {
 		mHolder = getHolder();
 		mHolder.addCallback(this);
 	}
 	
-	private void initView(Context context, AttributeSet attrs, int defStyle) {
-		mHolder = getHolder();
-		mHolder.addCallback(this);
-	}
-
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {

@@ -39,12 +39,6 @@ public class BubbleGraphView extends SurfaceView implements Callback
 		initView ( ctx , vo );
 	}
 	
-	public BubbleGraphView ( Context ctx , AttributeSet attrs )
-	{
-		super ( ctx , attrs );
-		this.mContext = ctx;
-	}
-	
 	@Override
 	public void surfaceDestroyed ( SurfaceHolder holder )
 	{

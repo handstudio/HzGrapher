@@ -48,26 +48,10 @@ public class LineCompareGraphView extends SurfaceView implements Callback{
 		initView(context, vo);
 	}
 	
-	public LineCompareGraphView(Context context, AttributeSet attrs) {
-		super(context, attrs);
-		initView(context, attrs, 0);
-	}
-	
-	public LineCompareGraphView(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs);
-		initView(context, attrs, defStyle);
-	}
-	
 	private void initView(Context context, LineGraphVO vo) {
 		ErrorCode ec = ErrorDetector.checkLineCompareGraphObject(vo);
 		ec.printError();
 		
-		mHolder = getHolder();
-		mHolder.addCallback(this);
-	}
-	
-
-	private void initView(Context context, AttributeSet attrs, int defStyle) {
 		mHolder = getHolder();
 		mHolder.addCallback(this);
 	}
