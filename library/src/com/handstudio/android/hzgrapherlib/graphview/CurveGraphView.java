@@ -23,6 +23,8 @@ import android.view.SurfaceView;
 
 import com.handstudio.android.hzgrapherlib.animation.GraphAnimation;
 import com.handstudio.android.hzgrapherlib.canvas.GraphCanvasWrapper;
+import com.handstudio.android.hzgrapherlib.error.ErrorCode;
+import com.handstudio.android.hzgrapherlib.error.ErrorDetector;
 import com.handstudio.android.hzgrapherlib.path.GraphPath;
 import com.handstudio.android.hzgrapherlib.util.Spline;
 import com.handstudio.android.hzgrapherlib.vo.GraphNameBox;
@@ -45,6 +47,9 @@ public class CurveGraphView extends SurfaceView implements Callback{
 	}
 	
 	private void initView(Context context, CurveGraphVO vo) {
+		ErrorCode ec = ErrorDetector.checkGraphObject(vo);
+		ec.printError();
+		
 		mHolder = getHolder();
 		mHolder.addCallback(this);
 	}

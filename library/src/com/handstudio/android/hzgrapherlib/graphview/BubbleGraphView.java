@@ -18,6 +18,8 @@ import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 
 import com.handstudio.android.hzgrapherlib.canvas.GraphCanvasWrapper;
+import com.handstudio.android.hzgrapherlib.error.ErrorCode;
+import com.handstudio.android.hzgrapherlib.error.ErrorDetector;
 import com.handstudio.android.hzgrapherlib.util.EuclidLine;
 import com.handstudio.android.hzgrapherlib.util.EuclidPoint;
 import com.handstudio.android.hzgrapherlib.vo.GraphNameBox;
@@ -71,6 +73,9 @@ public class BubbleGraphView extends SurfaceView implements Callback
 	
 	private void initView ( Context ctx , BubbleGraphVO vo )
 	{
+		ErrorCode ec = ErrorDetector.checkGraphObject(vo);
+		ec.printError();
+		
 		SurfaceHolder holder = this.getHolder();
 		holder.addCallback(this);
 		mContext = ctx;

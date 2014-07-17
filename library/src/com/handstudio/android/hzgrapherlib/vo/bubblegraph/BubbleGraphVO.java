@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.handstudio.android.hzgrapherlib.vo.Graph;
 import com.handstudio.android.hzgrapherlib.vo.GraphNameBox;
+import com.handstudio.android.hzgrapherlib.vo.linegraph.LineGraph;
 
 public class BubbleGraphVO extends Graph
 {
@@ -83,4 +84,12 @@ public class BubbleGraphVO extends Graph
 	
 	public int getGraphBG () { return this.graphBG; }
 	public void setGraphBG ( int graphBG ) { this.graphBG = graphBG; }
+	
+	public List<BubbleGraph> getArrGraph() {
+		return arrGraph;
+	}
+
+	public void setArrGraph(List<BubbleGraph> arrGraph) {
+		this.arrGraph = arrGraph;
+	}
 }

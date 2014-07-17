@@ -28,6 +28,8 @@ import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 
 import com.handstudio.android.hzgrapherlib.canvas.GraphCanvasWrapper;
+import com.handstudio.android.hzgrapherlib.error.ErrorCode;
+import com.handstudio.android.hzgrapherlib.error.ErrorDetector;
 import com.handstudio.android.hzgrapherlib.util.Converter;
 import com.handstudio.android.hzgrapherlib.vo.GraphNameBox;
 import com.handstudio.android.hzgrapherlib.vo.circlegraph.CircleGraph;
@@ -49,6 +51,9 @@ public class CircleGraphView extends SurfaceView implements Callback{
 	}
 
 	private void initView(Context context, CircleGraphVO vo) {
+		ErrorCode ec = ErrorDetector.checkGraphObject(vo);
+		ec.printError();
+		
 		mHolder = getHolder();
 		mHolder.addCallback(this);
 	}
