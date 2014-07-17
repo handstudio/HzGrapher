@@ -213,6 +213,14 @@ public class RadarGraphView extends SurfaceView implements Callback{
 				
 				canvas = mHolder.lockCanvas();
 				
+				try {
+					Thread.sleep(0000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				calcTimePass();
+				
 				synchronized(mHolder){
 					synchronized (touchLock) {
 						
@@ -255,14 +263,6 @@ public class RadarGraphView extends SurfaceView implements Callback{
 						
 					}
 				}
-				
-				try {
-					Thread.sleep(0000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				calcTimePass();
 			}
 			
 			

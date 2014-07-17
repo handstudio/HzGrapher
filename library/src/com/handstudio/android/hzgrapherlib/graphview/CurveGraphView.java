@@ -194,6 +194,14 @@ public class CurveGraphView extends SurfaceView implements Callback{
 				canvas = mHolder.lockCanvas();
 				graphCanvasWrapper = new GraphCanvasWrapper(canvas, width, height, mCurveGraphVO.getPaddingLeft(), mCurveGraphVO.getPaddingBottom());
 				
+				try {
+					Thread.sleep(0000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				calcTimePass();
+				
 				synchronized(mHolder){
 					synchronized (touchLock) {
 						
@@ -238,13 +246,6 @@ public class CurveGraphView extends SurfaceView implements Callback{
 						
 					}
 				}
-				
-				try {
-					Thread.sleep(0000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				calcTimePass();
 			}
 		}
 		

@@ -195,6 +195,14 @@ public class LineGraphView extends SurfaceView implements Callback{
 				canvas = mHolder.lockCanvas();
 				graphCanvasWrapper = new GraphCanvasWrapper(canvas, width, height, mLineGraphVO.getPaddingLeft(), mLineGraphVO.getPaddingBottom());
 				
+				try {
+					Thread.sleep(0000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				calcTimePass();
+				
 				synchronized(mHolder){
 					synchronized (touchLock) {
 						
@@ -242,14 +250,6 @@ public class LineGraphView extends SurfaceView implements Callback{
 						
 					}
 				}
-				
-				try {
-					Thread.sleep(0000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				calcTimePass();
 			}
 			
 			
