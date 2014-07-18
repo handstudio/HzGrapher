@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">HzGrapherSample</string>
+    <string name="text_line_graph">LineGraph</string>
+    <string name="text_line_graph_with_region">LineGraph with Region</string>
+    <string name="text_line_compare_graph">LineCompareGraph</string>
+    <string name="text_line_circle_graph">CircleGraph</string>
+    <string name="text_line_pie_graph">PieGraph</string>
+    <string name="text_radar_graph">RadarGraph</string>
+    <string name="text_bubble_graph">BubbleGraph</string>
+    <string name="text_curve_graph">CurveGraph</string>
+    <string name="text_curve_graph_with_region">CurveGraph with Region</string>
+    <string name="text_curve_compare_graph">CurveCompareGraph</string>
+    <string name="text_scatter_graph">ScatterGraph</string>
+</resources>

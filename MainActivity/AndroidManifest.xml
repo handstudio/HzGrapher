@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.handstudio.android.hzgrapher"
+    android:versionCode="1"
+    android:versionName="1.0.0" >
+
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="18" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="com.handstudio.android.hzgrapher.MainActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.handstudio.android.hzgrapher.LineGraphActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name="com.handstudio.android.hzgrapher.LineGraphWithRegionActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name="com.handstudio.android.hzgrapher.LineCompareGraphActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity android:name="com.handstudio.android.hzgrapher.CircleGraphActivity" >
+        </activity>
+        <activity android:name="com.handstudio.android.hzgrapher.PieGraphActivity" >
+        </activity>
+        <activity
+            android:name="com.handstudio.android.hzgrapher.RadarGraphActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity android:name="com.handstudio.android.hzgrapher.BubbleGraphActivity"></activity>
+        <activity
+            android:name="com.handstudio.android.hzgrapher.CurveGraphActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name="com.handstudio.android.hzgrapher.CurveGraphWithRegionActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name="com.handstudio.android.hzgrapher.CurveCompareGraphActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name="com.handstudio.android.hzgrapher.ScatterGraphActivity"
+            android:label="@string/app_name" >
+        </activity>
+    </application>
+
+</manifest>
