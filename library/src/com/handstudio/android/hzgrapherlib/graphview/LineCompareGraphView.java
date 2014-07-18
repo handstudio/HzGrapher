@@ -26,6 +26,8 @@ import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 
 import com.handstudio.android.hzgrapherlib.canvas.GraphCanvasWrapper;
+import com.handstudio.android.hzgrapherlib.error.ErrorCode;
+import com.handstudio.android.hzgrapherlib.error.ErrorDetector;
 import com.handstudio.android.hzgrapherlib.path.GraphPath;
 import com.handstudio.android.hzgrapherlib.vo.GraphNameBox;
 import com.handstudio.android.hzgrapherlib.vo.linegraph.LineGraphVO;
@@ -46,23 +48,10 @@ public class LineCompareGraphView extends SurfaceView implements Callback{
 		initView(context, vo);
 	}
 	
-	public LineCompareGraphView(Context context, AttributeSet attrs) {
-		super(context, attrs);
-		initView(context, attrs, 0);
-	}
-	
-	public LineCompareGraphView(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs);
-		initView(context, attrs, defStyle);
-	}
-	
 	private void initView(Context context, LineGraphVO vo) {
-		mHolder = getHolder();
-		mHolder.addCallback(this);
-	}
-	
-
-	private void initView(Context context, AttributeSet attrs, int defStyle) {
+		ErrorCode ec = ErrorDetector.checkLineCompareGraphObject(vo);
+		ec.printError();
+		
 		mHolder = getHolder();
 		mHolder.addCallback(this);
 	}
@@ -207,6 +196,14 @@ public class LineCompareGraphView extends SurfaceView implements Callback{
 				
 				canvas = mHolder.lockCanvas();
 				graphCanvasWrapper = new GraphCanvasWrapper(canvas, width, height, mLineGraphVO.getPaddingLeft(), mLineGraphVO.getPaddingBottom());
+
+				try {
+					Thread.sleep(0000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				calcTimePass();
 				
 				synchronized(mHolder){
 					synchronized (touchLock) {
@@ -254,14 +251,6 @@ public class LineCompareGraphView extends SurfaceView implements Callback{
 						
 					}
 				}
-				
-				try {
-					Thread.sleep(0000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				calcTimePass();
 			}
 		}
 		

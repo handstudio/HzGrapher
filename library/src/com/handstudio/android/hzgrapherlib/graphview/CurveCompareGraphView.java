@@ -27,6 +27,8 @@ import android.view.SurfaceView;
 
 import com.handstudio.android.hzgrapherlib.animation.GraphAnimation;
 import com.handstudio.android.hzgrapherlib.canvas.GraphCanvasWrapper;
+import com.handstudio.android.hzgrapherlib.error.ErrorCode;
+import com.handstudio.android.hzgrapherlib.error.ErrorDetector;
 import com.handstudio.android.hzgrapherlib.path.GraphPath;
 import com.handstudio.android.hzgrapherlib.util.Spline;
 import com.handstudio.android.hzgrapherlib.vo.GraphNameBox;
@@ -48,26 +50,14 @@ public class CurveCompareGraphView extends SurfaceView implements Callback{
 		initView(context, vo);
 	}
 	
-	public CurveCompareGraphView(Context context, AttributeSet attrs) {
-		super(context, attrs);
-		initView(context, attrs, 0);
-	}
-	
-	public CurveCompareGraphView(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs);
-		initView(context, attrs, defStyle);
-	}
-	
 	private void initView(Context context, CurveGraphVO vo) {
+		ErrorCode ec = ErrorDetector.checkLineCompareGraphObject(vo);
+		ec.printError();
+		
 		mHolder = getHolder();
 		mHolder.addCallback(this);
 	}
 	
-	private void initView(Context context, AttributeSet attrs, int defStyle) {
-		mHolder = getHolder();
-		mHolder.addCallback(this);
-	}
-
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {
@@ -210,6 +200,14 @@ public class CurveCompareGraphView extends SurfaceView implements Callback{
 				canvas = mHolder.lockCanvas();
 				graphCanvasWrapper = new GraphCanvasWrapper(canvas, width, height, mCurveGraphVO.getPaddingLeft(), mCurveGraphVO.getPaddingBottom());
 				
+				try {
+					Thread.sleep(0000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				calcTimePass();
+				
 				synchronized(mHolder){
 					synchronized (touchLock) {
 						
@@ -253,13 +251,6 @@ public class CurveCompareGraphView extends SurfaceView implements Callback{
 						
 					}
 				}
-				
-				try {
-					Thread.sleep(0000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				calcTimePass();
 			}
 		}
 		

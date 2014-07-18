@@ -28,6 +28,8 @@ import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 
 import com.handstudio.android.hzgrapherlib.canvas.GraphCanvasWrapper;
+import com.handstudio.android.hzgrapherlib.error.ErrorCode;
+import com.handstudio.android.hzgrapherlib.error.ErrorDetector;
 import com.handstudio.android.hzgrapherlib.util.Converter;
 import com.handstudio.android.hzgrapherlib.vo.GraphNameBox;
 import com.handstudio.android.hzgrapherlib.vo.circlegraph.CircleGraph;
@@ -41,11 +43,6 @@ public class CircleGraphView extends SurfaceView implements Callback{
 	private DrawThread mDrawThread;
 	private CircleGraphVO mCircleGraphVO = null;
 
-	public CircleGraphView(Context context) {
-		super(context);
-		initView(context);
-	}
-
 	//Constructor
 	public CircleGraphView(Context context, CircleGraphVO vo) {
 		super(context);
@@ -53,28 +50,10 @@ public class CircleGraphView extends SurfaceView implements Callback{
 		initView(context, vo);
 	}
 
-	public CircleGraphView(Context context, AttributeSet attrs) {
-		super(context, attrs);
-		initView(context, attrs, 0);
-	}
-
-	public CircleGraphView(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs);
-		initView(context, attrs, defStyle);
-	}
-
-	private void initView(Context context) {
-		mHolder = getHolder();
-		mHolder.addCallback(this);
-	}
-
 	private void initView(Context context, CircleGraphVO vo) {
-		mHolder = getHolder();
-		mHolder.addCallback(this);
-	}
-
-
-	private void initView(Context context, AttributeSet attrs, int defStyle) {
+		ErrorCode ec = ErrorDetector.checkGraphObject(vo);
+		ec.printError();
+		
 		mHolder = getHolder();
 		mHolder.addCallback(this);
 	}

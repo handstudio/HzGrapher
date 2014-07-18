@@ -21,6 +21,8 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 
+import com.handstudio.android.hzgrapherlib.error.ErrorCode;
+import com.handstudio.android.hzgrapherlib.error.ErrorDetector;
 import com.handstudio.android.hzgrapherlib.util.Converter;
 import com.handstudio.android.hzgrapherlib.vo.GraphNameBox;
 import com.handstudio.android.hzgrapherlib.vo.radargraph.RadarGraphVO;
@@ -45,28 +47,15 @@ public class RadarGraphView extends SurfaceView implements Callback{
 		initView(context, vo);
 	}
 	
-	public RadarGraphView(Context context, AttributeSet attrs) {
-		super(context, attrs);
-		initView(context, attrs, 0);
-	}
-	
-	public RadarGraphView(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs);
-		initView(context, attrs, defStyle);
-	}
-	
 	private void initView(Context context, RadarGraphVO vo) {
+		ErrorCode ec = ErrorDetector.checkGraphObject(vo);
+		ec.printError();
+		
 		mHolder = getHolder();
 		mHolder.addCallback(this);
 		
 		fieldCount = vo.getArrGraph().get(0).getCoordinateArr().length;
 		baselineCount = vo.getMaxValue() / vo.getIncrement();
-	}
-	
-
-	private void initView(Context context, AttributeSet attrs, int defStyle) {
-		mHolder = getHolder();
-		mHolder.addCallback(this);
 	}
 
 	@Override
@@ -224,6 +213,14 @@ public class RadarGraphView extends SurfaceView implements Callback{
 				
 				canvas = mHolder.lockCanvas();
 				
+				try {
+					Thread.sleep(0000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				calcTimePass();
+				
 				synchronized(mHolder){
 					synchronized (touchLock) {
 						
@@ -266,14 +263,6 @@ public class RadarGraphView extends SurfaceView implements Callback{
 						
 					}
 				}
-				
-				try {
-					Thread.sleep(0000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				calcTimePass();
 			}
 			
 			
