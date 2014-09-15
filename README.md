@@ -10,37 +10,37 @@ v1.0.0 - https://github.com/handstudio/HzGrapher/tree/master/release/v1.0.0
 Function
 --------
 + Line Graph
-![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/LineGraph.png)
+![Screenshot](screenshot/LineGraph.png)
 
 + Line Graph with Region
-![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/LineGraph%20with%20Region.png)
+![Screenshot](screenshot/LineGraph%20with%20Region.png)
 
 + Line Compare Graph
-![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/LineCompareGraph%20.png)
+![Screenshot](screenshot/LineCompareGraph%20.png)
 
 + Radar Graph
-![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/RadarGraph.png)
+![Screenshot](screenshot/RadarGraph.png)
 
 + Circle Graph
-![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/CircleGraph.png)
+![Screenshot](screenshot/CircleGraph.png)
 
 + Pie Graph
-![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/PieGraph.png)
+![Screenshot](screenshot/PieGraph.png)
 
 + Curve Graph
-![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/CruveGraph.png)
+![Screenshot](screenshot/CruveGraph.png)
 
 + Curve Graph with Region
-![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/CurveGraph with Region.png)
+![Screenshot](screenshot/CurveGraph with Region.png)
 
 + Curve Compare Graph
-![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/CurveCompareGraph.png)
+![Screenshot](screenshot/CurveCompareGraph.png)
 
 + Bubble Graph
-![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/BubbleGraph.png)
+![Screenshot](screenshot/BubbleGraph.png)
 
 + Scatter Graph
-![Screenshot](https://raw.github.com/handstudio/HzGrapher/master/screenshot/ScetterGraph.png)
+![Screenshot](screenshot/ScetterGraph.png)
 
 Feature
 -------
