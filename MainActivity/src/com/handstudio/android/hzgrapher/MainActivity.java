@@ -60,6 +60,10 @@ public class MainActivity extends Activity {
 			startActivity(ScatterGraphActivity.class);
 			break;
 			
+		case R.id.btnBarGraph:
+			startActivity(BarGraphActivity.class);
+			break;
+			
 		default:
 			break;
 		}

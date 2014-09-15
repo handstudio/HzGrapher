@@ -1,5 +1,6 @@
 package com.handstudio.android.hzgrapherlib.error;
 
+import com.handstudio.android.hzgrapherlib.vo.bargraph.BarGraphVO;
 import com.handstudio.android.hzgrapherlib.vo.bubblegraph.BubbleGraphVO;
 import com.handstudio.android.hzgrapherlib.vo.circlegraph.CircleGraphVO;
 import com.handstudio.android.hzgrapherlib.vo.curvegraph.CurveGraphVO;
@@ -130,6 +131,23 @@ public class ErrorDetector {
 		for (int i = 0; i < bubbleGraphVO.getArrGraph().size(); i++) {
 			if(legendSize !=bubbleGraphVO.getArrGraph().get(i).getCoordinateArr().length
 					|| legendSize !=bubbleGraphVO.getArrGraph().get(i).getSizeArr().length){
+				return ErrorCode.INVALIDATE_GRAPH_AND_LEGEND_SIZE;
+			}
+		}
+		
+		return ErrorCode.NOT_ERROR;
+	}
+	
+	public static ErrorCode checkGraphObject(BarGraphVO barGraphVO){
+		//1. vo check
+		if(barGraphVO == null){
+			return ErrorCode.GRAPH_VO_IS_EMPTY;
+		}
+		
+		//2. legend and graph size check
+		int legendSize = barGraphVO.getLegendArr().length;
+		for (int i = 0; i < barGraphVO.getArrGraph().size(); i++) {
+			if(legendSize !=barGraphVO.getArrGraph().get(i).getCoordinateArr().length){
 				return ErrorCode.INVALIDATE_GRAPH_AND_LEGEND_SIZE;
 			}
 		}

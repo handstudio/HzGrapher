@@ -76,21 +76,27 @@
             android:layout_height="wrap_content"
             android:onClick="onClick"
             android:text="@string/text_line_pie_graph" />
-        
+
         <Button
             android:id="@+id/btnBubbleGraph"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="onClick"
             android:text="@string/text_bubble_graph" />
-        
+
         <Button
             android:id="@+id/btnScatterGraph"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="onClick"
             android:text="@string/text_scatter_graph" />
-        
+
+        <Button
+            android:id="@+id/btnBarGraph"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onClick"
+            android:text="@string/text_bar_graph" />
     </LinearLayout>
 
 </ScrollView>

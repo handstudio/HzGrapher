@@ -12,4 +12,5 @@
     <string name="text_curve_graph_with_region">CurveGraph with Region</string>
     <string name="text_curve_compare_graph">CurveCompareGraph</string>
     <string name="text_scatter_graph">ScatterGraph</string>
+    <string name="text_bar_graph">BarGraph</string>
 </resources>

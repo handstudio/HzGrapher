@@ -7,7 +7,6 @@ import java.util.Random;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ViewGroup;
 
 import com.handstudio.android.hzgrapherlib.animation.GraphAnimation;

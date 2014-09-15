@@ -34,6 +34,10 @@ public class GraphCanvasWrapper{
 		mCanvas.drawArc(oval, startAngle, sweepAngle, true, paint);
 	}
 
+	public void drawRect(float startX, float startY, float stopX, float stopY, Paint paint) {
+		mCanvas.drawRect(mMt.calcX(startX), mMt.calcY(startY), mMt.calcX(stopX), mMt.calcY(stopY), paint);
+	}
+	
 	public void drawLine(float startX, float startY, float stopX, float stopY, Paint paint) {
 		mCanvas.drawLine(mMt.calcX(startX), mMt.calcY(startY), mMt.calcX(stopX), mMt.calcY(stopY), paint);
 	}
