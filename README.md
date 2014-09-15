@@ -47,3 +47,29 @@ Feature
 + easy to customize
 + free of layout size
 + graph draw animation
+
+
+Usage
+-----
+
+### Gradle build
+
+To install the sample application to your device run the following task:
+
+```bash
+$ ./gradlew installDebug
+```
+
+To deploy the library to your local Maven repository run the following task:
+
+```bash
+$ ./gradlew install
+```
+
+Then, to use the library in your project add the following to your `build.gradle`:
+
+```groovy
+dependencies {
+    compile 'com.handstudio.android:hzgrapherlib:1.0.0'
+}
+```
