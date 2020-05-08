@@ -1,5 +1,7 @@
 HzGrapher
 =========
+DEPRECATED: No longer actively maintained.
+=========
 
 android hz graph library
 
